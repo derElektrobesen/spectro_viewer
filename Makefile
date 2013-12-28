@@ -1,7 +1,6 @@
 FORMS_DIR = ui_forms
 O_FORMS_DIR = forms
-FORMS = main
-O_FORMS = $(FORMS:%=$(O_FORMS_DIR)/%.rb)
+FORMS = main_form
 
 all: forms
 
