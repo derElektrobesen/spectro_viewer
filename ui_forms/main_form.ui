@@ -18,19 +18,27 @@
     <item>
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="tab_measure">
        <attribute name="title">
         <string>Измерение</string>
        </attribute>
-       <layout class="QVBoxLayout" name="verticalLayout_2"/>
+       <layout class="QVBoxLayout" name="verticalLayout_2">
+        <item>
+         <widget class="Windows::MeasureWindow" name="widget" native="true"/>
+        </item>
+       </layout>
       </widget>
       <widget class="QWidget" name="tab_clients">
        <attribute name="title">
         <string>Клиенты</string>
        </attribute>
-       <layout class="QVBoxLayout" name="verticalLayout"/>
+       <layout class="QVBoxLayout" name="verticalLayout">
+        <item>
+         <widget class="Windows::ClientsListWindow" name="widget_2" native="true"/>
+        </item>
+       </layout>
       </widget>
      </widget>
     </item>
@@ -90,6 +98,20 @@
    </property>
   </action>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>Windows::MeasureWindow</class>
+   <extends>QWidget</extends>
+   <header>measurewindow.rb</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>Windows::ClientsListWindow</class>
+   <extends>QWidget</extends>
+   <header>clientslistwindow.rb</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections>
   <connection>

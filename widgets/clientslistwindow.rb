@@ -1,12 +1,11 @@
 require 'Qt4'
-require 'main_form'
-require 'measurewindow'
+require 'clients_table_widget'
 
 module Windows
-    class MainWindow < Qt::MainWindow
+    class ClientsListWindow < Qt::Widget
         def initialize parent = nil
             super
-            @ui = Ui::MainWindow.new
+            @ui = Ui::Clients_widget.new
             @ui.setupUi self
         end
     end
