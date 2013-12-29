@@ -45,78 +45,80 @@
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_3">
          <item>
-          <layout class="QGridLayout" name="gridLayout">
-           <item row="2" column="0">
-            <widget class="QLabel" name="label_3">
-             <property name="text">
-              <string>Посещения</string>
-             </property>
-            </widget>
-           </item>
-           <item row="3" column="0">
-            <widget class="QLabel" name="label_4">
-             <property name="text">
-              <string>Диагноз</string>
-             </property>
-            </widget>
-           </item>
-           <item row="3" column="1">
-            <widget class="QLabel" name="diagnosis_lbl">
-             <property name="text">
-              <string>TextLabel</string>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="1">
-            <widget class="QLabel" name="incomes_lbl">
-             <property name="text">
-              <string>TextLabel</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="0">
-            <widget class="QLabel" name="label_2">
-             <property name="text">
-              <string>Возраст</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="1">
-            <widget class="QLabel" name="name_lbl">
-             <property name="text">
-              <string>TextLabel</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="0">
-            <widget class="QLabel" name="label">
-             <property name="text">
-              <string>Пациент</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="1">
-            <widget class="QLabel" name="age_lbl">
-             <property name="text">
-              <string>TextLabel</string>
-             </property>
-            </widget>
-           </item>
-           <item row="4" column="1">
-            <widget class="QPushButton" name="results_btn">
-             <property name="text">
-              <string>Результаты</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
+          <widget class="QWidget" name="gridWidget" native="true">
+           <layout class="QGridLayout" name="gridLayout">
+            <item row="2" column="0">
+             <widget class="QLabel" name="label_3">
+              <property name="text">
+               <string>Посещения</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="0">
+             <widget class="QLabel" name="label_4">
+              <property name="text">
+               <string>Диагноз</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="1">
+             <widget class="QLabel" name="diagnosis_lbl">
+              <property name="text">
+               <string>TextLabel</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1">
+             <widget class="QLabel" name="incomes_lbl">
+              <property name="text">
+               <string>TextLabel</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="label_2">
+              <property name="text">
+               <string>Возраст</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QLabel" name="name_lbl">
+              <property name="text">
+               <string>TextLabel</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="0">
+             <widget class="QLabel" name="label">
+              <property name="text">
+               <string>Пациент</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QLabel" name="age_lbl">
+              <property name="text">
+               <string>TextLabel</string>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="1">
+             <widget class="QPushButton" name="results_btn">
+              <property name="text">
+               <string>Результаты</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
          </item>
          <item>
           <widget class="QScrollArea" name="points_sca">
            <property name="widgetResizable">
             <bool>true</bool>
            </property>
-           <widget class="QWidget" name="scrollAreaWidgetContents_4">
+           <widget class="QWidget" name="scrollAreaWidget">
             <property name="geometry">
              <rect>
               <x>0</x>
@@ -125,7 +127,8 @@
               <height>252</height>
              </rect>
             </property>
-            <zorder>gridLayoutWidget</zorder>
+            <layout class="QVBoxLayout" name="verticalLayout_12"/>
+            <z-order>gridLayoutWidget</z-order>
            </widget>
           </widget>
          </item>
@@ -192,7 +195,7 @@
               </widget>
              </item>
              <item>
-              <widget class="MeasureWidget" name="blue_sp_w" native="true">
+              <widget class="Widgets::MeasureWidget" name="blue_sp_w" native="true">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                  <horstretch>0</horstretch>
@@ -222,7 +225,7 @@
               </widget>
              </item>
              <item>
-              <widget class="MeasureWidget" name="red_sp_w" native="true">
+              <widget class="Widgets::MeasureWidget" name="red_sp_w" native="true">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                  <horstretch>0</horstretch>
@@ -252,7 +255,7 @@
               </widget>
              </item>
              <item>
-              <widget class="MeasureWidget" name="original_blue_sp_w" native="true">
+              <widget class="Widgets::MeasureWidget" name="original_blue_sp_w" native="true">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                  <horstretch>0</horstretch>
@@ -282,7 +285,7 @@
               </widget>
              </item>
              <item>
-              <widget class="MeasureWidget" name="original_red_sp_w" native="true">
+              <widget class="Widgets::MeasureWidget" name="original_red_sp_w" native="true">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                  <horstretch>0</horstretch>
@@ -392,7 +395,7 @@
               </widget>
              </item>
              <item>
-              <widget class="MeasureWidget" name="differentiated_blue_sp_w" native="true">
+              <widget class="Widgets::MeasureWidget" name="differentiated_blue_sp_w" native="true">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                  <horstretch>0</horstretch>
@@ -422,7 +425,7 @@
               </widget>
              </item>
              <item>
-              <widget class="MeasureWidget" name="differentiated_red_sp_w" native="true">
+              <widget class="Widgets::MeasureWidget" name="differentiated_red_sp_w" native="true">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                  <horstretch>0</horstretch>
@@ -452,7 +455,7 @@
               </widget>
              </item>
              <item>
-              <widget class="MeasureWidget" name="intact_blue_sp_w" native="true">
+              <widget class="Widgets::MeasureWidget" name="intact_blue_sp_w" native="true">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                  <horstretch>0</horstretch>
@@ -482,7 +485,7 @@
               </widget>
              </item>
              <item>
-              <widget class="MeasureWidget" name="intact_red_sp_w" native="true">
+              <widget class="Widgets::MeasureWidget" name="intact_red_sp_w" native="true">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                  <horstretch>0</horstretch>
@@ -505,7 +508,7 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>MeasureWidget</class>
+   <class>Widgets::MeasureWidget</class>
    <extends>QWidget</extends>
    <header>measurewidget.rb</header>
    <container>1</container>

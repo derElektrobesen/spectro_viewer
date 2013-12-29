@@ -1,9 +1,9 @@
 FORMS_DIR = ui_forms
 O_FORMS_DIR = forms
 
-MAIN_FORMS = main_form client_widget
-OTHER_FORMS = add_patient_form
-REQUIRES = measurewidget
+MAIN_FORMS = client_widget clients_table_widget measure_widget
+OTHER_FORMS = add_patient_form main_form
+REQUIRES = measurewidget clientstable
 
 FORMS = $(MAIN_FORMS) $(OTHER_FORMS)
 
