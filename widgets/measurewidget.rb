@@ -41,7 +41,7 @@ module Widgets
                 painter.setPen dia[:color]
                 last_p = nil
                 dia[:dia].each do |p|
-                    painter.drawLine Qt::LineF.new last_p, p if last_p
+                    painter.drawLine(Qt::LineF.new last_p, p) if last_p
                     last_p = p
                 end
             end

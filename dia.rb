@@ -6,8 +6,12 @@ module Dia
 
     class Diagram
         def initialize dia = nil
+            if dia.class == self.class
+                dia = dia.dia
+            end
             @dia = dia
             @mem = {}
+            @matr = Qt::Matrix.new
         end
 
         def dia= d
@@ -53,6 +57,31 @@ module Dia
             # TODO
         end
         
+        def transform matr
+            str = matr.to_s
+            unless @mem[str]
+                r = Diagram.new
+                @dia.each { |pnt| r.push(matr.map pnt) }
+                @mem[str] = r
+            end
+            return @mem[str]
+        end
+
+        def move dx, dy
+            @matr.translate dx, dy
+            return self
+        end
+
+        def scale sx, sy = nil
+            sy = sx unless sy
+            dx = @matr.dx
+            dy = @matr.dy
+            move -dx, -dy
+            @matr.scale sx, sy
+            move dx, dy
+            return self
+        end
+
         def bounds
             top_b, bot_b = vert_bounds
             return {
