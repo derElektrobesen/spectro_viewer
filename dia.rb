@@ -58,13 +58,14 @@ module Dia
         end
         
         def transform matr
-            str = matr.to_s
-            unless @mem[str]
+            str = "#{matr.m11}_#{matr.m12}_#{matr.m21}_#{matr.m22}_#{matr.dx}_#{matr.dy}"
+            unless @mem[:transformed] || @mem[:current_matr] != str
                 r = Diagram.new
                 @dia.each { |pnt| r.push(matr.map pnt) }
-                @mem[str] = r
+                @mem[:transformed] = r
+                @mem[:current_matr] = str
             end
-            return @mem[str]
+            return @mem[:transformed]
         end
 
         def move dx, dy
