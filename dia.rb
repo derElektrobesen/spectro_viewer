@@ -1,21 +1,7 @@
+require 'Qt'
+
 module Dia
-    class Point
-        def initialize x = nil, y = nil
-            @x = x
-            @y = y
-        end
-        def x= x
-            @x = x
-        end
-        def x
-            return @x
-        end
-        def y= y
-            @y = y
-        end
-        def y
-            return @y
-        end
+    class Point < Qt::PointF
     end
 
     class Diagram
@@ -61,6 +47,10 @@ module Dia
             end
             @mem[:derivative] = d
             return d
+        end
+
+        def smooth
+            # TODO
         end
         
         def bounds

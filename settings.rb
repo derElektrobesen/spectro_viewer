@@ -4,7 +4,7 @@ class Settings
     @@file_name = "#{File.dirname(__FILE__)}/settings.conf"
     @@content = nil
 
-    def self.read_file
+    def self.content
         unless @@content
             if File.exists? @@file_name
                 @@content = YAML.load File.read @@file_name
@@ -25,10 +25,10 @@ class Settings
     end
 
     def self.[] key
-        return @@content[key]
+        return content[key]
     end
 
     def self.[]= key, value
-        @@content[key] = value
+        content[key] = value
     end
 end
