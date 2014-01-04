@@ -172,12 +172,28 @@ module Dia
         def map matr
             str = matr.to_s
             unless @mem[:transformed] && @mem[:current_matr] == str
-                r = Diagram.new
+                r = DiagramRenderer.new
                 @dia.each { |pnt| r.push(Point.new(matr.map pnt)) }
                 @mem[:transformed] = r
                 @mem[:current_matr] = str
+                @mem[:painter_path] = nil
             end
             return @mem[:transformed]
+        end
+
+        def to_path
+            unless @mem[:painter_path]
+                path = Qt::PainterPath.new
+                @dia.each_with_index do |val, index|
+                    if index == 0
+                        path.moveTo val
+                    else
+                        path.lineTo val
+                    end
+                end
+                @mem[:painter_path] = path
+            end
+            return @mem[:painter_path]
         end
     end
 end

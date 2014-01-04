@@ -18,7 +18,7 @@ module Widgets
                 x = start + delta * i
                 dia.push(Dia::Point.new x, yield(x))
             end
-            push @diagrams.length, Dia::Diagram.new(dia)
+            push @diagrams.length, Dia::DiagramRenderer.new(dia)
         end
 
         def do_test_diagrams
@@ -69,11 +69,7 @@ module Widgets
             @diagrams.each_value do |d|
                 dia = d[:dia].map @matrix
                 painter.setPen d[:color]
-                last_p = nil
-                dia.each do |p|
-                    painter.drawLine(last_p, p) if last_p
-                    last_p = p
-                end
+                painter.drawPath dia.to_path
             end
         end
 
