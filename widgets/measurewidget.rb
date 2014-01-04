@@ -69,7 +69,12 @@ module Widgets
                 end
             end
             if bounds
-                # TODO
+                sx = width / (bounds[:right] - bounds[:left])
+                sy = height / (bounds[:top] - bounds[:bottom])
+                dx = bounds[:left]
+                dy = bounds[:bottom]
+                @matrix.scale(sx, -sy)
+                @matrix.translate(dx * sx, dy * sy)
             end
         end
     end
