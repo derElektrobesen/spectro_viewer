@@ -1,7 +1,7 @@
 from PyQt4.QtGui import *
-from forms import UI_PatientForm
+from .clients_table_widget import Ui_clients_widget as UI_ClientForm
 
-class PatientWindow(QWidget, UI_PatientForm):
+class ClientsWindow(QWidget, UI_ClientForm):
     def __init__(self, parent = None):
         QWidget.__init__(self, parent)
         self.setupUi(self)

@@ -1,5 +1,5 @@
 from PyQt4.QtGui import *
-from forms import UI_MainWindow
+from .main_form import Ui_MainWindow as UI_MainWindow
 
 class MainWindow(QMainWindow, UI_MainWindow):
     def __init__(self, parent = None):
