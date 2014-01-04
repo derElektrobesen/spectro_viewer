@@ -171,6 +171,7 @@ module Dia
 
         def map matr
             str = matr.to_s
+            t = Time.now.to_f
             unless @mem[:transformed] && @mem[:current_matr] == str
                 r = DiagramRenderer.new
                 @dia.each { |pnt| r.push(Point.new(matr.map pnt)) }
@@ -178,6 +179,7 @@ module Dia
                 @mem[:current_matr] = str
                 @mem[:painter_path] = nil
             end
+            puts "Mapping time: #{Time.now.to_f - t}"
             return @mem[:transformed]
         end
 
@@ -187,6 +189,7 @@ module Dia
                 @dia.each_with_index do |val, index|
                     if index == 0
                         path.moveTo val
+                        puts val
                     else
                         path.lineTo val
                     end

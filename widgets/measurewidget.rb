@@ -71,6 +71,7 @@ module Widgets
                 painter.setPen d[:color]
                 painter.drawPath dia.to_path
             end
+            painter.end
         end
 
         def recount_matrix
@@ -97,9 +98,16 @@ module Widgets
                 sy = height / (bounds[:top] - bounds[:bottom])
                 dx = bounds[:left]
                 dy = bounds[:bottom]
-                @matrix.scale(sx, -sy)
-                @matrix.translate(dx * sx, dy * sy)
+                puts "#{sx}, #{sy}"
+                @matrix.scale(sx, sy)
+                #@matrix.translate(dx * sx, dy * sy)
             end
+        end
+
+        def resizeEvent e
+            t1 = Time.now.to_f
+            recount_matrix
+            puts "Time: #{Time.now.to_f - t1}"
         end
     end
 end
