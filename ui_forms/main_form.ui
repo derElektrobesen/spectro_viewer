@@ -26,7 +26,7 @@
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_2">
         <item>
-         <widget class="Windows::MeasureWindow" name="widget" native="true"/>
+         <widget class="MeasureWindow" name="widget" native="true"/>
         </item>
        </layout>
       </widget>
@@ -36,7 +36,7 @@
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout">
         <item>
-         <widget class="Windows::ClientsListWindow" name="widget_2" native="true"/>
+         <widget class="ClientsListWindow" name="widget_2" native="true"/>
         </item>
        </layout>
       </widget>
@@ -100,15 +100,15 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>Windows::MeasureWindow</class>
+   <class>MeasureWindow</class>
    <extends>QWidget</extends>
-   <header>measurewindow.rb</header>
+   <header>measurewindow.py</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>Windows::ClientsListWindow</class>
+   <class>ClientsListWindow</class>
    <extends>QWidget</extends>
-   <header>clientslistwindow.rb</header>
+   <header>clientslistwindow.py</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

@@ -55,7 +55,7 @@
     </widget>
    </item>
    <item>
-    <widget class="Widgets::ClientsTable" name="tableView">
+    <widget class="ClientsTable" name="tableView">
      <property name="frameShape">
       <enum>QFrame::Box</enum>
      </property>
@@ -68,9 +68,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>Widgets::ClientsTable</class>
+   <class>ClientsTable</class>
    <extends>QTableView</extends>
-   <header>clientstable.rb</header>
+   <header>clientstable.py</header>
   </customwidget>
  </customwidgets>
  <resources/>

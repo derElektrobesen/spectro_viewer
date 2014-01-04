@@ -1,3 +1,4 @@
 .*.swp
 *~
-
+forms/*.bak
+forms/[!_]*.py

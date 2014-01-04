@@ -124,11 +124,10 @@
               <x>0</x>
               <y>0</y>
               <width>226</width>
-              <height>252</height>
+              <height>236</height>
              </rect>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_12"/>
-            <z-order>gridLayoutWidget</z-order>
            </widget>
           </widget>
          </item>
@@ -195,7 +194,7 @@
               </widget>
              </item>
              <item>
-              <widget class="Widgets::MeasureWidget" name="blue_sp_w" native="true">
+              <widget class="MeasureWidget" name="blue_sp_w" native="true">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                  <horstretch>0</horstretch>
@@ -225,7 +224,7 @@
               </widget>
              </item>
              <item>
-              <widget class="Widgets::MeasureWidget" name="red_sp_w" native="true">
+              <widget class="MeasureWidget" name="red_sp_w" native="true">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                  <horstretch>0</horstretch>
@@ -255,7 +254,7 @@
               </widget>
              </item>
              <item>
-              <widget class="Widgets::MeasureWidget" name="original_blue_sp_w" native="true">
+              <widget class="MeasureWidget" name="original_blue_sp_w" native="true">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                  <horstretch>0</horstretch>
@@ -285,7 +284,7 @@
               </widget>
              </item>
              <item>
-              <widget class="Widgets::MeasureWidget" name="original_red_sp_w" native="true">
+              <widget class="MeasureWidget" name="original_red_sp_w" native="true">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                  <horstretch>0</horstretch>
@@ -395,7 +394,7 @@
               </widget>
              </item>
              <item>
-              <widget class="Widgets::MeasureWidget" name="differentiated_blue_sp_w" native="true">
+              <widget class="MeasureWidget" name="differentiated_blue_sp_w" native="true">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                  <horstretch>0</horstretch>
@@ -425,7 +424,7 @@
               </widget>
              </item>
              <item>
-              <widget class="Widgets::MeasureWidget" name="differentiated_red_sp_w" native="true">
+              <widget class="MeasureWidget" name="differentiated_red_sp_w" native="true">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                  <horstretch>0</horstretch>
@@ -455,7 +454,7 @@
               </widget>
              </item>
              <item>
-              <widget class="Widgets::MeasureWidget" name="intact_blue_sp_w" native="true">
+              <widget class="MeasureWidget" name="intact_blue_sp_w" native="true">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                  <horstretch>0</horstretch>
@@ -485,7 +484,7 @@
               </widget>
              </item>
              <item>
-              <widget class="Widgets::MeasureWidget" name="intact_red_sp_w" native="true">
+              <widget class="MeasureWidget" name="intact_red_sp_w" native="true">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                  <horstretch>0</horstretch>
@@ -508,9 +507,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>Widgets::MeasureWidget</class>
+   <class>MeasureWidget</class>
    <extends>QWidget</extends>
-   <header>measurewidget.rb</header>
+   <header>measurewidget.py</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
