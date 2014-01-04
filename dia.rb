@@ -2,6 +2,16 @@ require 'Qt'
 
 module Dia
     class Point < Qt::PointF
+        def to_s
+            return "Point: (#{x}, #{y})"
+        end
+    end
+
+    class Matrix < Qt::Matrix
+        def to_s
+            return "Matrix:\n| %4.2f %4.2f 0 |\n| %4.2f %4.2f 0 |\n| %4.2f %4.2f 1 |" \
+                % (m11, m12, m21, m22, dx, dy)
+        end
     end
 
     class Diagram
@@ -11,7 +21,6 @@ module Dia
             end
             @dia = dia
             @mem = {}
-            @matr = Qt::Matrix.new
         end
 
         def dia= d
@@ -46,7 +55,7 @@ module Dia
                 unless prev
                     prev = pnt
                 else
-                    d.push Point pnt.x - prev.x, (pnt.y - prev.y) / (pnt.x - prev.x)
+                    d.push(Point.new pnt.x - prev.x, (pnt.y - prev.y) / (pnt.x - prev.x))
                 end
             end
             @mem[:derivative] = d
@@ -58,7 +67,7 @@ module Dia
         end
         
         def transform matr
-            str = "#{matr.m11}_#{matr.m12}_#{matr.m21}_#{matr.m22}_#{matr.dx}_#{matr.dy}"
+            str = matr.to_s
             unless @mem[:transformed] || @mem[:current_matr] != str
                 r = Diagram.new
                 @dia.each { |pnt| r.push(matr.map pnt) }
@@ -66,21 +75,6 @@ module Dia
                 @mem[:current_matr] = str
             end
             return @mem[:transformed]
-        end
-
-        def move dx, dy
-            @matr.translate dx, dy
-            return self
-        end
-
-        def scale sx, sy = nil
-            sy = sx unless sy
-            dx = @matr.dx
-            dy = @matr.dy
-            move -dx, -dy
-            @matr.scale sx, sy
-            move dx, dy
-            return self
         end
 
         def bounds

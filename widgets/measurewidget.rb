@@ -4,6 +4,8 @@ require 'settings'
 
 module Widgets
     class MeasureWidget < Qt::Widget
+        @matrix = nil
+
         def initialize parent = nil
             super parent
             @diagrams = {}
@@ -44,6 +46,30 @@ module Widgets
                     painter.drawLine(Qt::LineF.new last_p, p) if last_p
                     last_p = p
                 end
+            end
+        end
+
+        def recount_matrix
+            @matrix = Dia::Matrix.new
+            bounds = nil
+            @diagrams.values.each do |dia|
+                cur_bounds = dia.bounds
+                if !bounds
+                    bounds = cur_bounds
+                else
+                    change_bound = lambda do |key|
+                        if yield cur_bounds[key], bounds[key]
+                            bounds[key] = cur_bounds[key]
+                        end
+                    end
+                    change_bound.call :top, &:>
+                    change_bound.call :right, &:>
+                    change_bound.call :bottom, &:<
+                    change_bound.call :left, &:<
+                end
+            end
+            if bounds
+                # TODO
             end
         end
     end
