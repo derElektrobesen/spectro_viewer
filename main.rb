@@ -1,4 +1,4 @@
-#!/usr/bin/ruby -W2
+#!/usr/bin/ruby -W1
 
 $LOAD_PATH.unshift File.expand_path("#{File.dirname(__FILE__)}")
 $LOAD_PATH.unshift File.expand_path("#{File.dirname(__FILE__)}/forms")

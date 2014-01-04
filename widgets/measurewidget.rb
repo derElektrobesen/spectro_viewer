@@ -9,6 +9,21 @@ module Widgets
         def initialize parent = nil
             super parent
             @diagrams = {}
+            do_test_diagrams
+        end
+
+        def test_diagram start, delta, count
+            dia = []
+            count.times do |i|
+                x = start + delta * i
+                dia.push(Dia::Point.new x, yield(x))
+            end
+            push @diagrams.length, Dia::Diagram.new(dia)
+        end
+
+        def do_test_diagrams
+            test_diagram(-Math::PI, 0.001, (2 * Math::PI * 1000).to_int){ |x| Math.sin x }
+            test_diagram(-Math::PI, 0.001, (2 * Math::PI * 1000).to_int){ |x| Math.cos x }
         end
         
         def get_color
@@ -16,7 +31,7 @@ module Widgets
             used_colors = []
             changed = false
             r = nil
-            @diagrams.values.each { |dia| used_colors.push dia[:color] }
+            @diagrams.values.each { |dia| used_colors.push dia[:color_num] }
             used_colors = colors - used_colors
             if used_colors.length == 0
                 while !changed
@@ -36,9 +51,11 @@ module Widgets
         end
 
         def push key, dia
+            color = get_color
             @diagrams[key] = {
-                :dia    => dia,
-                :color  => Qt::Color.new(Qt::Rgb.new(get_color)),
+                :dia        => dia,
+                :color_num  => color,
+                :color      => Qt::Color.new(Qt::Color.new("##{color.to_s 16}")),
             }
             recount_matrix
         end
@@ -48,12 +65,13 @@ module Widgets
 
             painter = Qt::Painter.new self
             painter.setBrush Qt::NoBrush
-            @diagrams.values.each do |d|
+            puts "Repaint"
+            @diagrams.each_value do |d|
                 dia = d[:dia].map @matrix
                 painter.setPen d[:color]
                 last_p = nil
                 dia.each do |p|
-                    painter.drawLine(Qt::LineF.new last_p, p) if last_p
+                    painter.drawLine(last_p, p) if last_p
                     last_p = p
                 end
             end
@@ -62,20 +80,20 @@ module Widgets
         def recount_matrix
             @matrix = Dia::Matrix.new
             bounds = nil
-            @diagrams.values.each do |dia|
-                cur_bounds = dia.bounds
+            @diagrams.each_value do |dia|
+                cur_bounds = dia[:dia].bounds
                 if !bounds
                     bounds = cur_bounds
                 else
-                    change_bound = lambda do |key|
-                        if yield cur_bounds[key], bounds[key]
+                    change_bound = lambda do |key, operator|
+                        if cur_bounds[key].send operator, bounds[key]
                             bounds[key] = cur_bounds[key]
                         end
                     end
-                    change_bound.call :top, &:>
-                    change_bound.call :right, &:>
-                    change_bound.call :bottom, &:<
-                    change_bound.call :left, &:<
+                    change_bound.call :top, :>
+                    change_bound.call :right, :>
+                    change_bound.call :bottom, :<
+                    change_bound.call :left, :<
                 end
             end
             if bounds
