@@ -9,8 +9,8 @@ module Dia
 
     class Matrix < Qt::Matrix
         def to_s
-            return "Matrix:\n| %4.2f %4.2f 0 |\n| %4.2f %4.2f 0 |\n| %4.2f %4.2f 1 |" \
-                % (m11, m12, m21, m22, dx, dy)
+            return "Matrix:\n| %4.2f %4.2f 0 |\n| %4.2f %4.2f 0 |\n" +
+                "| %4.2f %4.2f 1 |" % [m11, m12, m21, m22, dx, dy]
         end
     end
 
@@ -66,7 +66,7 @@ module Dia
             # TODO
         end
         
-        def transform matr
+        def map matr
             str = matr.to_s
             unless @mem[:transformed] || @mem[:current_matr] != str
                 r = Diagram.new
