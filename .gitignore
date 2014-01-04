@@ -2,3 +2,4 @@
 *~
 forms/*.bak
 forms/[!_]*.py
+*/__pycache__/*

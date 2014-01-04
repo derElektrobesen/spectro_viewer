@@ -1,5 +1,3 @@
-from # -*- coding: utf-8 -*-
-
 from PyQt4.QtGui import *
 import numpy as np
 from matplotlib.figure import Figure
