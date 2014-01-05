@@ -1,5 +1,5 @@
 .*.swp
 *~
-forms/*.bak
+*/*.bak
 forms/[!_]*.py
 */__pycache__/*
