@@ -27,7 +27,7 @@ class MySQL(QObject):
         self.__db.setPassword(passw)
 
         if not self.__db.open():
-            raise SqlException("Database open failure: %s" % self.__db.lastError())
+            raise SqlException("Database open failure: %s" % self.__db.lastError().text())
 
         action.trigger()
 
