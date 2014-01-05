@@ -1,4 +1,5 @@
 from PyQt4.QtGui import *
+from PyQt4.QtCore import pyqtSlot
 from PyQt4.QtSql import QSqlQuery, QSqlDatabase, QSql
 from db import DB
 import os
@@ -25,9 +26,12 @@ class ClientTableModel(QStandardItemModel):
                  _tr('clienttablemodel', 'Отчество'), _tr('clienttablemodel', 'Номер карты')]
     __query = None
     __pid = os.getpid()
+    __rows = {}
+
     def __init__(self):
         QStandardItemModel.__init__(self)
         self.__set_header()
+        self.setSortRole(0)
 
     def load_names(self):
         self.__query = QSqlQuery(DB.con())
@@ -41,7 +45,12 @@ class ClientTableModel(QStandardItemModel):
             self.setHorizontalHeaderItem(index, QStandardItem(column))
 
     def add_row(self, data):
-        print(data)
+        row = []
+        for key in ['lastname', 'name', 'middlename', 'card']:
+            row.append(QStandardItem(data[key]))
+        self.appendRow(row)
+        self.__rows[data['id']] = row[0]
+        self.sort(self.sortRole())
 
     def update_pattern(self, new_pat = ''):
         if not self.__query:
@@ -72,3 +81,7 @@ class ClientsTable(QTableView):
 
     def load_names(self):
         return self.__model.load_names()
+
+    @pyqtSlot()
+    def update_list(self, pat):
+        return self.__model.update_pattern(pat)

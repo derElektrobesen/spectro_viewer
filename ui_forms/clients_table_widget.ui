@@ -62,6 +62,24 @@
      <property name="frameShadow">
       <enum>QFrame::Plain</enum>
      </property>
+     <property name="alternatingRowColors">
+      <bool>false</bool>
+     </property>
+     <property name="selectionMode">
+      <enum>QAbstractItemView::SingleSelection</enum>
+     </property>
+     <property name="selectionBehavior">
+      <enum>QAbstractItemView::SelectRows</enum>
+     </property>
+     <property name="verticalScrollMode">
+      <enum>QAbstractItemView::ScrollPerPixel</enum>
+     </property>
+     <property name="horizontalScrollMode">
+      <enum>QAbstractItemView::ScrollPerPixel</enum>
+     </property>
+     <property name="sortingEnabled">
+      <bool>true</bool>
+     </property>
     </widget>
    </item>
   </layout>
@@ -71,8 +89,28 @@
    <class>ClientsTable</class>
    <extends>QTableView</extends>
    <header>clientstable.py</header>
+   <slots>
+    <slot>update_list(QString)</slot>
+   </slots>
   </customwidget>
  </customwidgets>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>lineEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>clients_table</receiver>
+   <slot>update_list(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>175</x>
+     <y>31</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>174</x>
+     <y>132</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>
