@@ -1,3 +1,3 @@
-from .mysql import MySQL, DB
+from .mysql import MySQL, DB, SqlException
 
-__all__ = ['MySQL', 'DB']
+__all__ = ['MySQL', 'DB', 'SqlException']
