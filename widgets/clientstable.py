@@ -3,6 +3,7 @@ from PyQt4.QtCore import pyqtSlot
 from PyQt4.QtSql import QSqlQuery, QSqlDatabase, QSql
 from db import DB
 import os
+import re
 
 try:
     _encoding = QApplication.UnicodeUTF8
@@ -44,17 +45,23 @@ class ClientTableModel(QStandardItemModel):
         for index, column in enumerate(self.__columns):
             self.setHorizontalHeaderItem(index, QStandardItem(column))
 
-    def add_row(self, data):
-        row = []
-        for key in ['lastname', 'name', 'middlename', 'card']:
-            row.append(QStandardItem(data[key]))
-        self.appendRow(row)
-        self.__rows[data['id']] = row[0]
+    def __add_row(self, data):
+        if data['id'] not in self.__old_rows:
+            row = []
+            for key in ['lastname', 'name', 'middlename', 'card']:
+                row.append(QStandardItem(data[key]))
+            self.appendRow(row)
+            self.__rows[data['id']] = row[0]
+        else:
+            self.__rows[data['id']] = self.__old_rows[data['id']]
         self.sort(self.sortRole())
 
     def update_pattern(self, new_pat = ''):
         if not self.__query:
             return
+
+        self.__old_rows = self.__rows
+        self.__rows = {}
 
         self.__query.bindValue(0, new_pat)
         self.__query.exec_()
@@ -63,7 +70,7 @@ class ClientTableModel(QStandardItemModel):
         q = self.__data_q
         q.exec_()
         while q.next():
-            self.add_row({
+            self.__add_row({
                 'id': q.value(0),
                 'lastname': q.value(1),
                 'name': q.value(2),
@@ -71,6 +78,10 @@ class ClientTableModel(QStandardItemModel):
                 'card': q.value(4),
             })
         q.finish()
+
+        for key, value in self.__old_rows.items():
+            if key not in self.__rows:
+                self.takeRow(value.index().row())
 
 class ClientsTable(QTableView):
     __model = ClientTableModel()
@@ -84,4 +95,6 @@ class ClientsTable(QTableView):
 
     @pyqtSlot()
     def update_list(self, pat):
+        p = re.compile('\s+')
+        p.sub(pat, ' ')
         return self.__model.update_pattern(pat)
