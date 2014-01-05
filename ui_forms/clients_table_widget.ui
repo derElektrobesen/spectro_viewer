@@ -55,7 +55,7 @@
     </widget>
    </item>
    <item>
-    <widget class="ClientsTable" name="tableView">
+    <widget class="ClientsTable" name="clients_table">
      <property name="frameShape">
       <enum>QFrame::Box</enum>
      </property>

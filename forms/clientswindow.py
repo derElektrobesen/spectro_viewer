@@ -5,3 +5,6 @@ class ClientsWindow(QWidget, UI_ClientForm):
     def __init__(self, parent = None):
         QWidget.__init__(self, parent)
         self.setupUi(self)
+
+    def load_database(self):
+        self.clients_table.load_names()

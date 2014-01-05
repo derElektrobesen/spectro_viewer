@@ -29,7 +29,7 @@ class ClientTableModel(QStandardItemModel):
 
     def load_names(self):
         self.__query = QSqlQuery(DB.con())
-        self.__query.prepare("call filter_names('?')")
+        self.__query.prepare("call filter_names(?)")
         self.update_pattern()
 
     def __set_header(self):
@@ -44,9 +44,27 @@ class ClientTableModel(QStandardItemModel):
             return
 
         self.__query.bindValue(0, new_pat)
-        self.__query.exec()
+        self.__query.exec_()
         while (self.__query.next()):
+            print("Hello")
             print(self.__query.value(0))
+
+        query = QSqlQuery(DB.con())
+        query.prepare("call filter_names('')")
+        query.exec_()
+        while (query.next()):
+            print("Mysql hello")
+
+        query.finish()
+
+        query = QSqlQuery(DB.con())
+        query.prepare("select * from Names")
+        query.exec_()
+        while (query.next()):
+            print("Mysql")
+        query.finish()
+
+        self.__query.finish()
 
 class ClientsTable(QTableView):
     __model = ClientTableModel()
@@ -54,3 +72,6 @@ class ClientsTable(QTableView):
         QTableView.__init__(self, parent)
         self.setModel(self.__model)
         self.horizontalHeader().setResizeMode(QHeaderView.Stretch)
+
+    def load_names(self):
+        return self.__model.load_names()

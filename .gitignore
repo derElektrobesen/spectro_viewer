@@ -3,4 +3,4 @@
 */*.bak
 forms/[!_]*.py
 */__pycache__/*
-db/*.sql
+db/sql/*

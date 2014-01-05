@@ -1,4 +1,5 @@
 from PyQt4.QtSql import *
+from PyQt4.QtCore import *
 
 class SqlException(Exception):
     __msg = None
@@ -17,8 +18,8 @@ class DB:
     def con():
         return QSqlDatabase.database(DB.name())
 
-class MySQL:
-    def __init__(self, user, passw):
+class MySQL(QObject):
+    def __init__(self, user, passw, action):
         self.__db = QSqlDatabase.addDatabase('QMYSQL', DB.name())
         self.__db.setHostName('localhost')
         self.__db.setDatabaseName('spectro_viewer')
@@ -27,6 +28,8 @@ class MySQL:
 
         if not self.__db.open():
             raise SqlException("Database open failure: %s" % self.__db.lastError())
+
+        action.trigger()
 
     def close_connection(self):
         self.__db.close()

@@ -18,7 +18,7 @@
     <item>
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="tab_measure">
        <attribute name="title">
@@ -26,7 +26,7 @@
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_2">
         <item>
-         <widget class="MeasureWindow" name="widget" native="true"/>
+         <widget class="MeasureWindow" name="measure_w" native="true"/>
         </item>
        </layout>
       </widget>
@@ -36,7 +36,7 @@
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout">
         <item>
-         <widget class="ClientsListWindow" name="widget_2" native="true"/>
+         <widget class="ClientsListWindow" name="clients_w" native="true"/>
         </item>
        </layout>
       </widget>
