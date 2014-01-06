@@ -1,4 +1,13 @@
 from PyQt4.QtCore import QObject, pyqtSlot, pyqtSignal
+from PyQt4.QtGui import QApplication
+
+try:
+    _encoding = QApplication.UnicodeUTF8
+    def _tr(context, text, disambig = None):
+        return QApplication.translate(context, text, disambig, _encoding)
+except AttributeError:
+    def _tr(context, text, disambig = None):
+        return QApplication.translate(context, text, disambig)
 
 def _composed(*decs):
     def deco(f):
@@ -45,6 +54,26 @@ class DeviceStatus(QObject):
     def copy(self):
         return DeviceStatus(state = self.state, mode = self.mode,
                 frames_count = self.frames_count, exp_time = self.exp_time)
+
+    def __str__(self):
+        return _tr("DeviceStatus",
+            "Статус: {state}; Режим: {mode};".format(
+            state = {
+                States.inactive:    _tr("State", "Неактивен"),
+                States.starting:    _tr("State", "Старт"),
+                States.metering:    _tr("State", "Измерение"),
+                States.stopping:    _tr("State", "Остановка"),
+                States.stopped:     _tr("State", "Остановлен"),
+                States.connecting:  _tr("State", "Подключение"),
+            }[self.state], mode = {
+                Modes.single:       _tr("Modes", "Одиночный"),
+                Modes.continues:    _tr("Modes", "Непрерывный"),
+            }[self.mode]))
+
+    def __repr__(self):
+        return _tr("DeviceStatus",
+            "{start} Кадров/с: {frames}; Время эксп.: {exp}".format(
+            frames = self.frames_count, exp = self.exp_time, start = self.__str__()))
     
     @property
     def state(self):
