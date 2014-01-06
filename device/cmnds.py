@@ -1,4 +1,4 @@
-from .modes import Modes, States
+from .modes import Modes, States, DeviceStatus
 
 class Commands:
     @staticmethod
@@ -27,3 +27,26 @@ class Commands:
     
     @staticmethod
     def status_start_flag(): return 58  # :
+
+    @staticmethod
+    def decode_status(block):
+        block = block.decode('utf-8')
+        state = {
+            'd': States.inactive,
+            's': States.starting,
+            'S': States.metering,
+            'p': States.stopping,
+            'P': States.stopped,
+        }[block[0]]
+
+        mode = {
+            'c': Modes.continues,
+            's': Modes.single,
+        }[block[1]]
+
+        pos = block.find('x')
+        frames = int(block[2:pos])
+        exp = float(block[pos + 1:])
+
+        return DeviceStatus(mode = mode, state = state,
+                frames_count = frames_count, exp_time = exp)

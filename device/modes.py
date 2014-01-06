@@ -35,44 +35,13 @@ class States:
     @_st_prop
     def connecting(): return 5
 
-class DeviceMode(QObject):
-    mode_changed = pyqtSignal()
-
-    def __init__(self, mode = Modes.continues):
-        super()
-        self.__mode = mode
-
-    @property
-    def single(self):
-        return self.__mode == Modes.single
-
-    @property
-    def continues(self):
-        return self.__mode == Modes.continues
-
-    @pyqtSlot()
-    def change_mode(self, new_mode):
-        if self.__mode != new_mode:
-            self.__mode = new_mode
-            self.mode_changed.emit()
-
-class DeviceState(QObject):
-    __state = States.stopped
-
-    @property
-    def state(self): return self.__state
-
-    @state.setter
-    def state(self, val): self.__state = val
-
 class DeviceStatus(QObject):
-    __mode = DeviceMode()
-    __state = DeviceState()
+    def __init__(self, state = States.inactive, mode = Modes.single, frames_count = 0, exp_time = 0):
+        self.__mode = mode
+        self.__state = state
+        self.__frames_count = frames_count
+        self.__exp_time = exp_time
     
-    @property
-    def mode_changed(self):
-        return self.__mode.mode_changed
-
     @property
     def state(self):
         return self.__state.state
@@ -80,3 +49,27 @@ class DeviceStatus(QObject):
     @state.setter
     def state(self, new_state):
         self.__state.state = new_state
+
+    @property
+    def mode(self):
+        return self.__mode
+
+    @mode.setter
+    def mode(self, val):
+        self.__mode = val
+
+    @property
+    def frames_count(self):
+        return self.__frames_count
+
+    @frames_count.setter
+    def frames_count(self, val):
+        self.__frames_count = float(val)
+
+    @property
+    def exp_time(self):
+        return self.__exp_time
+
+    @exp_time.setter
+    def exp_time(self, val):
+        self.__exp_time = val

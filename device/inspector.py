@@ -16,6 +16,7 @@ class InspectorThread(QThread):
         self.__can_work = True
         self.__sock = None
         self.__last_data_block = None
+        self.__last_device_status = None
 
     def run(self):
         while self.__can_work:
@@ -42,18 +43,25 @@ class InspectorThread(QThread):
             if block[-1] == Commands.data_ends_flag():
                 break
 
+        block = block[1:-1]
         if block[0] == Commands.data_start_flag():
-            block = block[1:-1]
-            self.__last_data_block = Graph(block)
-            self.data_block_came.emit()
+            self.on_data_block_came(block)
         elif block[0] == Commands.status_start_flag():
-            print("Status str came")
+            self.on_status_block_came(block)
+
+    def on_data_block_came(self, block):
+        self.__last_data_block = Graph(block)
+        self.data_block_came.emit()
+
+    def on_status_block_came(self, block):
+        self.__last_device_status = Commands.decode_status(block)
+        self.status_str_came.emit()
 
     def get_last_block(self):
         return self.__last_data_block
 
     def get_last_status(self):
-        pass
+        return self.__last_device_status
 
 class DeviceInspector(QObject):
     __socket = socket()
@@ -71,6 +79,7 @@ class DeviceInspector(QObject):
     def __init__(self):
         super()
         self.__inspector_thread.data_block_came.connect(self.on_data_came)
+        self.__inspector_thread.status_str_came.connect(self.on_status_came)
         self.__data_came_slot = self.__status_came_slot = None
         self.connect()
 
