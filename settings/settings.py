@@ -1,36 +1,41 @@
 from pickle import dump, load
 import os
 
-class Settings:
-    __fname = os.path.dirname(os.path.abspath(__file__)) + '/settings.cfg'
-    __settings = {
+class __Args:
+    fname = os.path.dirname(os.path.abspath(__file__)) + '/settings.cfg'
+    settings = {
         'device_port':  50009,        
     }
 
+def __read_settings():
+    ref = {}
+
+    if os.path.isfile(__Args.fname):
+        ref = load(open(__Args.fname, "rb"))
+    __Args.settings.update(ref)
+
+    code = ''
+
+    for key, value in __Args.settings.items():
+        code += """
     @staticmethod
-    def read_settings(cls):
-        ref = {}
-        if os.path.isfile(cls.__fname):
-            ref = load(open(cls.__fname, "rb"))
-        cls.__settings.update(ref)
-
-        code = ''
-
-        for key, value in cls.__settings.items():
-            code += """
-    class class_{name}:
-        @staticmethod
-        def __get_{name}(cls): return cls.__settings['{name}']
-
-        @staticmethod
-        def __set_{name}(cls, val): cls.__settings['{name}'] = val
-
-        {name} = property(__get_{name}, __set_{name})
-        {name} = {value}
-            """.format(name = key, value = value)
-        exec(code)
-        return code
+    def __get_{name}(cls): return __Args.settings['{name}']
 
     @staticmethod
-    def store(cls):
-        dump(cls.__settings, open(cls.__fname, "wb"))
+    def __set_{name}(cls, val): __Args.settings['{name}'] = val
+
+    {name} = property(__get_{name}, __set_{name})
+    {name} = {value}
+        """.format(name = key, value = value)
+
+    return code
+
+__code = """
+class Settings:
+    @staticmethod
+    def store():
+        dump(__Args.settings, open(__Args.__fname, "wb"))
+
+"""
+
+exec(__code + __read_settings())

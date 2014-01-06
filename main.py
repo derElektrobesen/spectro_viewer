@@ -12,9 +12,11 @@ from forms import MainWindow
 from device import DeviceInspector
 from settings import Settings
 
-Settings.read_settings(Settings)
+print("main")
 print(Settings.device_port)
-
+Settings.device_port = 100
+print(Settings.device_port)
+print("end main")
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

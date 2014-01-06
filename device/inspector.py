@@ -1,6 +1,7 @@
 from PyQt4.QtCore import QObject, pyqtSignal, pyqtSlot
 from socket import *
 from .modes import DeviceStatus, Modes, States
+from settings import Settings
 
 class DeviceInspector(QObject):
     __socket = socket()
