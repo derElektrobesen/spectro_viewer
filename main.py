@@ -10,7 +10,6 @@ from PyQt4.QtGui import *
 from db import MySQL, SqlException
 from forms import MainWindow
 from device import DeviceInspector
-from settings import Settings
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
