@@ -1,26 +1,47 @@
 from PyQt4.QtCore import QObject, pyqtSignal, pyqtSlot
 from PyQt4.QtCore import QThread, QCoreApplication
 from socket import *
-from .modes import DeviceStatus, Modes, States
+from select import select
 from settings import Settings
+from .modes import DeviceStatus, Modes, States
+from .cmnds import Commands
 
 class InspectorThread(QThread):
+    status_str_came = pyqtSignal()
+    data_block_came = PyqtSignal()
+
     def __init__(self, parent = None):
         QThread.__init__(self, parent)
         self.__can_work = True
         self.__sock = None
 
-    def run():
+    def run(self):
         while self.__can_work:
-            print("Hello")
+            if not self.__sock:
+                self.msleep(1000)
+            else:
+                ready_read, ready_write, in_err = \
+                    select([self.__sock], [], [], 1000)
+                if self.__sock in ready_read:
+                    self.ready_read(self.__sock)
             QCoreApplication.processEvents()
-            self.msleep(1000)
 
-    def stop():
+    def stop(self):
         self.__can_work = False
 
-    def set_socket(self, sock):
+    def set_sock(self, sock):
         self.__sock = sock
+
+    def ready_read(self, sock):
+        block = b''
+        while True:
+            data = sock.recv(8192)
+            block += data
+            if block[-1] == Commands.data_ends_flag():
+                break
+
+        block = block[1:-1]
+        str_block = block.decode('utf-8')
 
 class DeviceInspector(QObject):
     __socket = socket()
@@ -37,19 +58,9 @@ class DeviceInspector(QObject):
 
     def __init__(self):
         super()
-        self.__signals = {
-            States.inactive:    self.device_inactive,
-            States.starting:    self.device_starting,
-            States.metering:    self.device_metering,
-            States.stopping:    self.device_stopping,
-            States.stopped:     self.device_stopped,
-            States.connecting:  self.device_connecting,
-        }
+        self.connect()
 
-    def reconnect(self):
-        self.__inspector_thread.stop()
-        self.__inspector_thread.quit()
-        self.__socket.close()
+    def connect(self):
         self.__socket.connect(('127.0.0.1', Settings.device_port))
         self.__inspector_thread.set_sock(self.__socket)
         self.__inspector_thread.start()

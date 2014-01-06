@@ -35,7 +35,6 @@ class States:
     @_st_prop
     def connecting(): return 5
 
-
 class DeviceMode(QObject):
     mode_changed = pyqtSignal()
 

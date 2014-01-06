@@ -14,6 +14,8 @@ from device import DeviceInspector
 if __name__ == "__main__":
     app = QApplication(sys.argv)
 
+    d = DeviceInspector()
+
     wnd = MainWindow()
     act = QAction("DB_connected", wnd)
     act.triggered.connect(wnd.load_database)

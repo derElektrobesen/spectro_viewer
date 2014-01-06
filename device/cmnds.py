@@ -10,14 +10,20 @@ class Commands:
         return b'#exp=' + bytes(str(time), 'utf-8') + b'>'
 
     @staticmethod
-    def start_metering_cmd():
-        return b's>'
+    def start_metering_cmd(): return b's>'
 
     @staticmethod
-    def stop_metering():
-        return b'p>'
+    def stop_metering(): return b'p>'
 
     @staticmethod
     def interpret_device_state(cmd):
         pass
 
+    @staticmethod
+    def data_ends_flag(): return 62     # >
+
+    @staticmethod
+    def data_start_flag(): return 60    # <
+    
+    @staticmethod
+    def status_start_flag(): return 58  # :
