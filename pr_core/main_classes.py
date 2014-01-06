@@ -1,6 +1,6 @@
 class Graph:
-    def __init__(self, dev_data = None):
-        self.__data = None
+    def __init__(self, dev_data = None, data = None):
+        self.__data = data
         if dev_data:
             self.compile_dev_data(dev_data)
 
@@ -13,3 +13,6 @@ class Graph:
 
     def __str__(self):
         return str(self.__data)
+
+    def copy(self):
+        return Graph(data = list(self.__data))

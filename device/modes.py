@@ -41,6 +41,10 @@ class DeviceStatus(QObject):
         self.__state = state
         self.__frames_count = frames_count
         self.__exp_time = exp_time
+
+    def copy(self):
+        return DeviceStatus(state = self.state, mode = self.mode,
+                frames_count = self.frames_count, exp_time = self.exp_time)
     
     @property
     def state(self):

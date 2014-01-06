@@ -50,7 +50,7 @@ class InspectorThread(QThread):
             self.on_status_block_came(block)
 
     def on_data_block_came(self, block):
-        self.__last_data_block = Graph(block)
+        self.__last_data_block = Graph(dev_data = block)
         self.data_block_came.emit()
 
     def on_status_block_came(self, block):
@@ -58,10 +58,10 @@ class InspectorThread(QThread):
         self.status_str_came.emit()
 
     def get_last_block(self):
-        return self.__last_data_block
+        return self.__last_data_block.copy()
 
     def get_last_status(self):
-        return self.__last_device_status
+        return self.__last_device_status.copy()
 
 class DeviceInspector(QObject):
     __socket = socket()
