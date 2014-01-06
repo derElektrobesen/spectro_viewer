@@ -9,6 +9,7 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from PyQt4.QtGui import *
 from db import MySQL, SqlException
 from forms import MainWindow
+from device import DeviceInspector
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
