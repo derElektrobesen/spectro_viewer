@@ -3,17 +3,19 @@ from PyQt4.QtCore import QThread, QCoreApplication
 from socket import *
 from select import select
 from settings import Settings
+from pr_core import Graph
 from .modes import DeviceStatus, Modes, States
 from .cmnds import Commands
 
 class InspectorThread(QThread):
     status_str_came = pyqtSignal()
-    data_block_came = PyqtSignal()
+    data_block_came = pyqtSignal()
 
     def __init__(self, parent = None):
         QThread.__init__(self, parent)
         self.__can_work = True
         self.__sock = None
+        self.__last_data_block = None
 
     def run(self):
         while self.__can_work:
@@ -40,8 +42,18 @@ class InspectorThread(QThread):
             if block[-1] == Commands.data_ends_flag():
                 break
 
-        block = block[1:-1]
-        str_block = block.decode('utf-8')
+        if block[0] == Commands.data_start_flag():
+            block = block[1:-1]
+            self.__last_data_block = Graph(block)
+            self.data_block_came.emit()
+        elif block[0] == Commands.status_start_flag():
+            print("Status str came")
+
+    def get_last_block(self):
+        return self.__last_data_block
+
+    def get_last_status(self):
+        pass
 
 class DeviceInspector(QObject):
     __socket = socket()
@@ -58,9 +70,22 @@ class DeviceInspector(QObject):
 
     def __init__(self):
         super()
+        self.__inspector_thread.data_block_came.connect(self.on_data_came)
+        self.__data_came_slot = self.__status_came_slot = None
         self.connect()
 
     def connect(self):
         self.__socket.connect(('127.0.0.1', Settings.device_port))
         self.__inspector_thread.set_sock(self.__socket)
         self.__inspector_thread.start()
+
+    def set_slots(self, data_came_slot = None, status_came_slot = None):
+        self.__data_came_slot = self.__status_came_slot = None
+
+    @pyqtSlot()
+    def on_data_came(self):
+        return self.__data_came_slot and self.__data_came_slot(self.__inspector_thread.get_last_block())
+
+    @pyqtSlot()
+    def on_status_came(self):
+        return self.__status_came_slot and self.__status_came_slot(self.__inspector_thread.get_last_status())
