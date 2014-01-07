@@ -43,6 +43,7 @@ class ClientTableModel(QStandardItemModel):
             row = []
             for key in ['lastname', 'name', 'middlename', 'card']:
                 row.append(QStandardItem(data[key]))
+                row[-1].setEditable(False)
             self.appendRow(row)
             self.__rows[data['id']] = row[0]
         else:
