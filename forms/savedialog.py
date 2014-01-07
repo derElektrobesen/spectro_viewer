@@ -75,6 +75,7 @@ class SaveDialog(QMainWindow, Ui_SaveDialog):
         QMainWindow.__init__(self, parent)
         self.setupUi(self)
         self.__collection = collection
+        self.__last_texts = {'name': '', 'card': ''}
 
         global DEBUG
         if not DEBUG:
@@ -157,11 +158,17 @@ class SaveDialog(QMainWindow, Ui_SaveDialog):
     @pyqtSlot('QString')
     def on_main_text_changed(self, text):
         ref = {
-            'name_edt': self.name_edt_lines,
-            'card_no_edt': self.card_no_lines,
+            'name_edt': (self.name_edt_lines, 'name'),
+            'card_no_edt': (self.card_no_lines, 'card'),
         }.get(self.sender().objectName(), None)
         if ref:
+            if self.__last_texts[ref[1]] == text:
+                return
+            self.__last_texts[ref[1]] = text
+            ref = ref[0]
             ref.update_data(text)
             c = QCompleter(ref.get_string_list())
+            ref = self.sender().completer()
             c.setCaseSensitivity(Qt.CaseInsensitive)
             self.sender().setCompleter(c)
+            del ref
