@@ -38,6 +38,8 @@ class CompleterText:
                     'card': q.value(4),
                 }
                 self.set_text()
+            else:
+                self.__data = None
             q.finish()
 
     def set_text(self):
@@ -53,13 +55,13 @@ class CompleterText:
         if req_type == ReqType.select_cards:
             text = 'call search_card(?)'
         elif req_type == ReqType.select_names:
-            text = 'call filter_names(?)'
+            text = 'call search_name(?)'
         if text:
             self.__req.prepare(text)
             self.__req_type = req_type
 
     def get_text(self):
-        return self.__data['text']
+        return self.__data and self.__data['text']
 
     def get_data(self):
         return self.__data
