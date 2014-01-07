@@ -107,7 +107,13 @@ class SaveDialog(QMainWindow, Ui_SaveDialog):
         self.progressBar.setValue(val)
 
     def set_completers(self):
-        pass
+        m = CompleterModel()
+        m.set_request(ReqType.select_names)
+        self.name_edt.setCompleter(QCompleter(m))
+
+        m = CompleterModel()
+        m.set_request(ReqType.select_cards)
+        self.card_no_edt.setCompleter(QCompleter(m))
 
     @pyqtSlot()
     def on_remove_graph_btn_clicked(self):
