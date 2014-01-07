@@ -1,8 +1,11 @@
 class Graph:
-    def __init__(self, dev_data = None, data = None):
-        self.__data = data
-        if dev_data:
-            self.compile_dev_data(dev_data)
+    def __init__(self, other = None, dev_data = None, data = None):
+        if other:
+            self.__data = other.get_data()
+        else:
+            self.__data = data
+            if dev_data:
+                self.compile_dev_data(dev_data)
 
     def compile_dev_data(self, data):
         data = tuple(map(float, data.decode('utf-8').split()))
@@ -17,14 +20,14 @@ class Graph:
     def copy(self):
         return Graph(data = tuple(self.__data))
 
-    def __concat__(self, gr):
+    def __add__(self, gr):
         def add(x, y): return x + y
         def f(arr_1, arr_2): return tuple(map(add, arr_1, arr_2))
-        return Graph(data = (f(self.__graph[0], gr[0]), f(self.__graph[1], gr[1])))
+        return Graph(data = (f(self.get_data()[0], gr.get_data()[0]), f(self.get_data()[1], gr.get_data()[1])))
 
     def __truediv__(self, num):
         def f(arr): return tuple(map(lambda x: x / num, arr))
-        return Graph(data = (f(self.__graph[0]), f(self.__graph[1])))
+        return Graph(data = (f(self.get_data()[0]), f(self.get_data()[1])))
 
     def __iadd__(self, gr):
         self.__data = (self + gr).get_data()
@@ -35,8 +38,10 @@ class Graph:
         return self
 
 class GraphCollection:
-    def __init__(self):
-        self.__graphs = []
+    def __init__(self, graphs = None):
+        if graphs and type(graphs) != list:
+            graphs = [graphs]
+        self.__graphs = graphs or []
         self.__to_remove = []
 
     def add_graph(self, gr):
@@ -48,8 +53,10 @@ class GraphCollection:
         return self
 
     def remove_deffered_graphs(self):
-        for index in self.__to_remove:
-            self.remove_graph(index)
+        offset = 0
+        for index in sorted(self.__to_remove):
+            self.__graphs.pop(index - offset)
+            offset += 1
         return self
 
     def remove_graph(self, index):
@@ -67,7 +74,7 @@ class GraphCollection:
             else:
                 r += gr
         r /= len(self.__graphs)
-        return r
+        return GraphCollection(r)
 
     def count(self):
         return len(self.__graphs)

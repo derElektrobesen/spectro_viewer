@@ -37,24 +37,36 @@ class SaveDialog(QMainWindow, Ui_SaveDialog):
 
         self.on_index_changed(0)
 
+    def set_progress(self, val):
+        self.progressBar.setValue(val)
+
     @pyqtSlot()
     def on_remove_graph_btn_clicked(self):
-        i = self.measures_box.currentIndex()
-        index = self.measures_box.itemData(i)
-        self.__collection.get_measure(index['measure']).remove_graph_deffered(index['graph'])
-        self.measures_box.removeItem(i)
+        self.set_progress(0)
+        if self.measures_box.count() > 1:
+            i = self.measures_box.currentIndex()
+            index = self.measures_box.itemData(i)
+            self.__collection.get_measure(index['measure']).remove_graph_deffered(index['graph'])
+            self.measures_box.removeItem(i)
+        if self.measures_box.count() == 1:
+            self.remove_measure_btn.setEnabled(False)
+        self.set_progress(100)
 
     @pyqtSlot()
     def on_average_btn_clicked(self):
+        self.set_progress(0)
         index = self.measures_box.itemData(self.measures_box.currentIndex())
-        measure = self.__collection.get_measure(index['measure'])
-        measure.remove_deffered_graphs().average_graphs()
-        self.__collection.set_measure(index['measure'], measure)
-        self.set_measure_box_value()
+        if index:
+            measure = self.__collection.get_measure(index['measure'])
+            measure = measure.remove_deffered_graphs().average_graphs()
+            self.__collection.set_measure(index['measure'], measure)
+            self.set_measure_box_value()
+        self.set_progress(100)
 
     @pyqtSlot(int)
     def on_index_changed(self, index):
         index = self.measures_box.itemData(index)
-        gr = self.__collection.get_measure(index['measure']).get_graph(index['graph'])
-        self.cur_measure_wgt.set_graph("{measure}-{graph}".format(**index), gr)
-        self.cur_measure_wgt.render()
+        if index:
+            gr = self.__collection.get_measure(index['measure']).get_graph(index['graph'])
+            self.cur_measure_wgt.set_graph("{measure}-{graph}".format(**index), gr)
+            self.cur_measure_wgt.render()
