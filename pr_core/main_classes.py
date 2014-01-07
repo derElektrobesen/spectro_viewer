@@ -17,6 +17,23 @@ class Graph:
     def copy(self):
         return Graph(data = tuple(self.__data))
 
+    def __concat__(self, gr):
+        def add(x, y): return x + y
+        def f(arr_1, arr_2): return tuple(map(add, arr_1, arr_2))
+        self.__graph = f(self.__graph[0], gr[0]), f(self.__graph[1], gr[1])
+        return self
+
+    def __truediv__(self, num):
+        def f(arr): return tuple(map(lambda x: x / num, arr))
+        self.__graph = f(self.__graph[0]), f(self.__graph[1])
+        return self
+
 class GraphCollection:
     def __init__(self):
         self.__graphs = []
+
+    def add_graph(self, gr):
+        self.__graph.insert(0, gr)
+
+    def get_graph(self, index):
+        return self.__graph[index]
