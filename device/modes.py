@@ -71,11 +71,11 @@ class DeviceStatus(QObject):
     
     @property
     def state(self):
-        return self.__state.state
+        return self.__state
 
     @state.setter
     def state(self, new_state):
-        self.__state.state = new_state
+        self.__state = new_state
 
     @property
     def mode(self):

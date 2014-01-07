@@ -13,8 +13,9 @@ class MeasureWindow(QWidget, UI_MeasureForm):
         self.__can_start = False
         self.__inspector.set_slots(data_came_slot = self.__on_data_came,
                 status_came_slot = self.__on_status_came)
-        QObject.connect(self.start_measure_btn, SIGNAL("clicked"), self.start_btn_pressed)
-        QObject.connect(self.continiously_chb, SIGNAL("stateChanged(int)"), self.mode_changed)
+        QObject.connect(self.start_measure_btn, SIGNAL("clicked()"), self.__start_btn_pressed)
+        QObject.connect(self.continiously_chb, SIGNAL("stateChanged(int)"), self.__mode_changed)
+        QObject.connect(self.exposition_time_spb, SIGNAL("valueChanged(int)"), self.__exp_time_changed)
 
     def __on_data_came(self, graph):
         self.measure_viewer.set_graph(0, graph)
@@ -42,18 +43,22 @@ class MeasureWindow(QWidget, UI_MeasureForm):
         self.start_measure_btn.setEnabled(enabled)
 
     def __set_measure_mode(self, mode):
-        self.continiously_chb.setChecked(mode == Mode.continues)
+        self.continiously_chb.setChecked(mode == Modes.continues)
 
     def __set_exp_time(self, time):
         self.exposition_time_spb.setValue(int(time))
 
     @pyqtSlot()
-    def start_btn_pressed(self):
+    def __exp_time_changed(self, val):
+        self.__inspector.set_exp_time(val)
+
+    @pyqtSlot()
+    def __start_btn_pressed(self):
         if self.__can_start:
             self.__inspector.start_metering()
         else:
             self.__inspector.stop_metering()
 
     @pyqtSlot(int)
-    def mode_changed(self, checked):
+    def __mode_changed(self, checked):
         self.__inspector.set_work_mode(Modes.continues if checked else Modes.single)
