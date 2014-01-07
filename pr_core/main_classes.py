@@ -37,9 +37,19 @@ class Graph:
 class GraphCollection:
     def __init__(self):
         self.__graphs = []
+        self.__to_remove = []
 
     def add_graph(self, gr):
         self.__graphs.insert(0, gr)
+        return self
+
+    def remove_graph_deffered(self, index):
+        self.__to_remove.append(index)
+        return self
+
+    def remove_deffered_graphs(self):
+        for index in self.__to_remove:
+            self.remove_graph(index)
         return self
 
     def remove_graph(self, index):
@@ -49,7 +59,7 @@ class GraphCollection:
     def get_graph(self, index):
         return self.__graphs[index]
 
-    def avarage_graphs(self):
+    def average_graphs(self):
         r = None
         for gr in self.__graphs:
             if not r:
