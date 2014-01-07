@@ -25,8 +25,6 @@ class MeasureWindow(QWidget, UI_MeasureForm):
         QObject.connect(self.exposition_time_spb, SIGNAL("valueChanged(int)"), self.__exp_time_changed)
         QObject.connect(self, SIGNAL("destroyed()"), self.on_close)
 
-        QObject.connect(self.pushButton, SIGNAL("clicked()"), self.__show_collection)
-
     def __on_data_came(self, graph):
         self.measure_viewer.set_graph(0, graph)
         self.measure_viewer.render()

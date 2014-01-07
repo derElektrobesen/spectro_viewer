@@ -80,8 +80,6 @@ class CompleterText:
     def get_data(self):
         return self.__data
 
-DEBUG = True
-
 class SaveDialog(QMainWindow, Ui_SaveDialog):
     def __init__(self, parent = None, collection = None):
         QMainWindow.__init__(self, parent)
@@ -89,9 +87,7 @@ class SaveDialog(QMainWindow, Ui_SaveDialog):
         self.__collection = collection
         self.__do_text_search = True
 
-        global DEBUG
-        if not DEBUG:
-            self.set_measure_box_value()
+        self.set_measure_box_value()
 
         self.connect_slots()
         self.set_completers()
