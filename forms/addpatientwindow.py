@@ -17,6 +17,7 @@ class AddPatientWindow(QMainWindow, Ui_add_patient_form):
         self.__queries = {
                 'add_patient':  f('call add_patient(:lastname, :name, :surname, :card_no, ' +
                     ':birthdate, :eco, :diagnosis, :treatment)'),
+                'has_card':     f('select has_card(?)'),
         }
 
     def __on_empty_field_found(self, name):
@@ -48,6 +49,17 @@ class AddPatientWindow(QMainWindow, Ui_add_patient_form):
 
         results['birthdate'] = self.birth_date_edt.date()
         results['eco'] = self.eco_count_edt.value()
+
+        q = self.__queries['has_card']
+        q.bindValue(0, results['card_no'])
+        q.exec_()
+        q.next()
+        v = q.isNull(0)
+        q.finish()
+        if not v:
+            QMessageBox.critical(self, translate("Error", "Ошибка"),
+                    translate("Incorrect_card", "Пациент с указанной картой уже существует в базе"))
+            return
 
         q = self.__queries['add_patient']
         for key, val in results.items():
