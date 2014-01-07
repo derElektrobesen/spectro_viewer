@@ -43,6 +43,9 @@
       </property>
       <item>
        <widget class="QPushButton" name="start_measure_btn">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="text">
          <string>Старт</string>
         </property>
@@ -50,6 +53,9 @@
       </item>
       <item>
        <widget class="QPushButton" name="process_measure_btn">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="text">
          <string>Обработать</string>
         </property>
@@ -113,6 +119,9 @@
       </item>
       <item>
        <widget class="QPushButton" name="clean_hist_btn">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="text">
          <string>Очистить историю</string>
         </property>
@@ -151,4 +160,7 @@
  </customwidgets>
  <resources/>
  <connections/>
+ <slots>
+  <slot>start_btn_pressed()</slot>
+ </slots>
 </ui>

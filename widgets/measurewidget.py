@@ -34,7 +34,7 @@ class MeasureWidget(FigureCanvas):
         plt = self.__axes
         plt.cla()
         for gr in self.__graphs.values():
-            line = plt.plot(*zip(*(gr['graph'].get_data())))
+            line = plt.plot(*(gr['graph'].get_data()))
             if 'color' in gr:
                 plt.setp(line, color = gr['color'])
         self.__fig.subplots_adjust(left=0.1, right=0.9, top=0.9, bottom=0.1)

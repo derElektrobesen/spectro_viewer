@@ -33,4 +33,5 @@ class MySQL(QObject):
 
     def close_connection(self):
         self.__db.close()
-        self.__db.removeDatabase(DB.name())
+        self.__db = None
+        QSqlDatabase.removeDatabase(DB.name())
