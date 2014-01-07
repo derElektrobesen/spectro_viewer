@@ -8,3 +8,6 @@ class ClientsWindow(QWidget, UI_ClientForm):
 
     def load_database(self):
         self.clients_table.load_names()
+
+    def update_database(self):
+        self.clients_table.update_list(self.lineEdit.text())

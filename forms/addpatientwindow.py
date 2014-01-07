@@ -1,19 +1,23 @@
 from PyQt4.QtGui import *
+from PyQt4.QtCore import pyqtSlot
 from PyQt4.QtSql import QSqlQuery
 from pr_core import translate
-import DB
+from db import DB
+from .add_patient_form import Ui_add_patient_form
 
 class AddPatientWindow(QMainWindow, Ui_add_patient_form):
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, callback = None):
         QMainWindow.__init__(self, parent)
         self.setupUi(self)
-
         self.__prepare_queries()
+        self.__callback = callback
 
     def __prepare_queries(self):
         def f(text):
             q = QSqlQuery(DB.con())
             q.prepare(text)
+            return q
+
         self.__queries = {
                 'add_patient':  f('call add_patient(:lastname, :name, :surname, :card_no, ' +
                     ':birthdate, :eco, :diagnosis, :treatment)'),
@@ -37,17 +41,17 @@ class AddPatientWindow(QMainWindow, Ui_add_patient_form):
         for key in ('name_edt', 'surname_edt', 'lastname_edt', 'card_no_edt'):
             val = this[key].text().strip()
             if len(val) == 0:
-                return self.__on_empty_field_found(fnames[key])
+                return self.__on_empty_field_found(f_names[key])
             results[key[:-4]] = val
 
         for key in ('diagnosis_edt', 'treatment_edt'):
-            val = this[key].plainText().strip()
+            val = this[key].toPlainText().strip()
             if len(val) > 0:
                 results[key[:-4]] = val
             else:
                 results[key[:-4]] = ''
 
-        results['birthdate'] = self.birth_date_edt.date()
+        results['birthdate'] = self.birth_date_edt.date().toString('dd.MM.yyyy')
         results['eco'] = self.eco_count_edt.value()
 
         q = self.__queries['has_card']
@@ -63,6 +67,12 @@ class AddPatientWindow(QMainWindow, Ui_add_patient_form):
 
         q = self.__queries['add_patient']
         for key, val in results.items():
-            q.bindValue(key, val)
+            q.bindValue(":" + key, val)
         q.exec_()
         q.finish()
+
+        QMessageBox.information(self, translate("Success", "Успех"),
+                translate("Patient_saved", "Пациент был успешно сохранен в базе"))
+
+        self.close()
+        self.__callback and self.__callback()
