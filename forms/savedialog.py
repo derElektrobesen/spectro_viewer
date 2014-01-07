@@ -1,5 +1,5 @@
 from .save_dialog import Ui_MainWindow as Ui_SaveDialog
-from PyQt4.QtGui import QMainWindow, QStandardItemModel, QStandardItem, QCompleter
+from PyQt4.QtGui import QMainWindow, QStandardItemModel, QStandardItem, QMessageBox
 from PyQt4.QtCore import QObject, pyqtSlot, SIGNAL, Qt
 from PyQt4.QtSql import QSqlQuery
 from pr_core import translate
@@ -145,10 +145,15 @@ class SaveDialog(QMainWindow, Ui_SaveDialog):
             self.remove_measure_btn.setEnabled(False)
         self.set_progress(100)
 
+    def get_indexes(self, index = -1):
+        if index < 0:
+            index = self.measure_box.currentIndex()
+        return self.measures_box.itemData(index)
+
     @pyqtSlot()
     def on_average_btn_clicked(self):
         self.set_progress(0)
-        index = self.measures_box.itemData(self.measures_box.currentIndex())
+        index = self.get_indexes()
         if index:
             measure = self.__collection.get_measure(index['measure'])
             measure = measure.remove_deffered_graphs().average_graphs()
@@ -158,7 +163,7 @@ class SaveDialog(QMainWindow, Ui_SaveDialog):
 
     @pyqtSlot(int)
     def on_index_changed(self, index):
-        index = self.measures_box.itemData(index)
+        index = self.get_indexes(index)
         if index:
             gr = self.__collection.get_measure(index['measure']).get_graph(index['graph'])
             self.cur_measure_wgt.set_graph("{measure}-{graph}".format(**index), gr)
@@ -189,7 +194,8 @@ class SaveDialog(QMainWindow, Ui_SaveDialog):
                 edt.setSelection(len(text), len(t) - len(text))
 
     def incorrect_user(self):
-        print("Failed")
+        QMessageBox.critical(self, translate("Error", "Ошибка"),
+                translate("Names_err", "Введены некорректные данные о пациенте (имя и/или номер карты)."))
 
     @pyqtSlot()
     def on_save_btn_clicked(self):
