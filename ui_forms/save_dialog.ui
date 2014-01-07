@@ -196,6 +196,16 @@
    <header>savedialog.py</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>name_edt</tabstop>
+  <tabstop>card_no_edt</tabstop>
+  <tabstop>pnt_edt</tabstop>
+  <tabstop>measures_box</tabstop>
+  <tabstop>save_btn</tabstop>
+  <tabstop>pushButton_4</tabstop>
+  <tabstop>remove_measure_btn</tabstop>
+  <tabstop>average_btn</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>

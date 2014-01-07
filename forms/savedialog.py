@@ -5,6 +5,7 @@ from PyQt4.QtSql import QSqlQuery
 from pr_core import translate
 from db import DB
 import re
+from settings import Settings
 
 class ReqType:
     select_cards = 0
@@ -94,11 +95,24 @@ class SaveDialog(QMainWindow, Ui_SaveDialog):
 
         self.connect_slots()
         self.set_completers()
+        self.prepare_queries()
 
     def connect_slots(self):
         QObject.connect(self.measures_box, SIGNAL("currentIndexChanged(int)"), self.on_index_changed)
         QObject.connect(self.name_edt, SIGNAL("textChanged(QString)"), self.on_main_text_changed)
         QObject.connect(self.card_no_edt, SIGNAL("textChanged(QString)"), self.on_main_text_changed)
+
+    def prepare_queries(self):
+        def f(q):
+            s = QSqlQuery(DB.con())
+            s.prepare(q)
+            return s
+
+        self.__queries = {
+            'add_visit':    f('select add_visit(?)'),
+            'add_graph':    f('select add_graph(?, ?, ?)'),
+            'add_point':    f('insert into Data(diagram_id, point) values (?, POINT(?, ?))')
+        }
 
     def set_collection(self, collection):
         self.__collection = collection
@@ -121,7 +135,9 @@ class SaveDialog(QMainWindow, Ui_SaveDialog):
 
         self.on_index_changed(0)
 
-    def set_progress(self, val):
+    def set_progress(self, val, pr_range = (0,100)):
+        self.progressBar.setMinimum(pr_range[0])
+        self.progressBar.setMaximum(pr_range[1])
         self.progressBar.setValue(val)
 
     def set_completers(self):
@@ -132,6 +148,44 @@ class SaveDialog(QMainWindow, Ui_SaveDialog):
         m = CompleterText()
         m.set_request(ReqType.select_cards)
         self.card_no_lines = m
+
+    def save_graph(self, cli_id, text):
+        q = self.__queries['add_visit']
+        q.bindValue(0, cli_id)
+        q.exec_()
+        q.next()
+        visit_id = q.value(0)
+        q.finish()
+
+        index = self.get_indexes()
+        gr = self.__collection.get_measure(index['measure']).get_graph(index['graph'])
+
+        DB.con().transaction()
+
+        q = self.__queries['add_graph']
+        q.bindValue(0, visit_id)
+        q.bindValue(1, Settings.device_type)
+        q.bindValue(2, text)
+        q.exec_()
+        q.next()
+        gr_id = q.value(0)
+        q = self.__queries['add_point']
+
+        l = len(gr)
+        self.set_progress(0, (0, l))
+        i = 0
+        for x, y in gr:
+            i += 1
+            q.bindValue(0, gr_id)
+            q.bindValue(1, x)
+            q.bindValue(2, y)
+            q.exec_()
+            q.finish()
+            if i % 200 == 0:
+                self.set_progress(i, (0, l))
+        self.set_progress(100)
+
+        DB.con().commit()
 
     @pyqtSlot()
     def on_remove_measure_btn_clicked(self):
@@ -196,6 +250,9 @@ class SaveDialog(QMainWindow, Ui_SaveDialog):
     def incorrect_user(self):
         QMessageBox.critical(self, translate("Error", "Ошибка"),
                 translate("Names_err", "Введены некорректные данные о пациенте (имя и/или номер карты)."))
+    def incorrect_pnt(self):
+        QMessageBox.critical(self, translate("Error", "Ошибка"),
+                translate("Point_err", "Вверено некорректное название точки"))
 
     @pyqtSlot()
     def on_save_btn_clicked(self):
@@ -208,3 +265,7 @@ class SaveDialog(QMainWindow, Ui_SaveDialog):
                 cli_id = confirmator.get_id()
             elif confirmator.get_id() != cli_id or not cli_id:
                 return self.incorrect_user()
+        text = self.pnt_edt.text().strip()
+        if not len(text):
+            return self.incorrect_pnt()
+        self.save_graph(cli_id, text)

@@ -37,6 +37,19 @@ class Graph:
         self.__data = (self / num).get_data()
         return self
 
+    def __iter__(self):
+        self.__current_index = 0
+        return self
+
+    def __len__(self):
+        return len(self.__data[0])
+
+    def next(self):
+        if self.__current_index > len(self):
+            raise StopIteration
+        self.__current_index += 1
+        return self.__data[0][self.__current_index - 1], self.__data[1][self.__current_index - 1]
+
 class GraphCollection:
     def __init__(self, graphs = None):
         if graphs and type(graphs) != list:
