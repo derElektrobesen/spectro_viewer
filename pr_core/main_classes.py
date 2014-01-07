@@ -57,3 +57,9 @@ class GraphCollection:
                 r += gr
         r /= len(self.__graphs)
         return r
+
+    def count(self):
+        return len(self.__graphs)
+
+    def empty(self):
+        return self.count() == 0

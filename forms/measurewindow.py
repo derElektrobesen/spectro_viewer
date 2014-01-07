@@ -18,12 +18,10 @@ class MeasureWindow(QWidget, UI_MeasureForm):
         QObject.connect(self.continiously_chb, SIGNAL("stateChanged(int)"), self.__mode_changed)
         QObject.connect(self.exposition_time_spb, SIGNAL("valueChanged(int)"), self.__exp_time_changed)
 
-    def __save_graph(self, gr):
-        self.__collection.add_graph(gr)
-
     def __on_data_came(self, graph):
         self.measure_viewer.set_graph(0, graph)
         self.measure_viewer.render()
+        self.__collection.add_graph(gr)
 
     def __on_status_came(self, status):
         print(repr(status))
@@ -45,6 +43,8 @@ class MeasureWindow(QWidget, UI_MeasureForm):
             if state != States.metering:
                 enabled = False
         self.start_measure_btn.setEnabled(enabled)
+        print("start: %d, empty: %d" % (self.__can_start, self.__collection.empty()))
+        self.process_measure_btn.setEnabled(self.__can_start and not self.__collection.empty())
 
     def __set_measure_mode(self, mode):
         self.continiously_chb.setChecked(mode == Modes.continues)
