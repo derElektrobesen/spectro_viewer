@@ -15,7 +15,7 @@ class CompleterText:
         self.__req = None
         self.__select = QSqlQuery(DB.con())
         self.__select.prepare("select id, lastname, name, middlename, card_no from filtered_names")
-        self.__rows = []
+        self.__data = None
 
     def update_data(self, text):
         if self.__req:
@@ -29,24 +29,23 @@ class CompleterText:
 
             q = self.__select
             q.exec_()
-            while q.next():
-                self.add_row({
+            if q.next():
+                self.__data = {
                     'id': q.value(0),
                     'lastname': q.value(1),
                     'name': q.value(2),
                     'middlename': q.value(3),
                     'card': q.value(4),
-                })
+                }
+                self.set_text()
             q.finish()
 
-    def add_row(self, data):
-        items = ['lastname', 'name', 'middlename', 'card']
+    def set_text(self):
+        items = ['lastname', 'name', 'middlename'] if self.__req_type == ReqType.select_names else ['card']
         text = ''
         for key in items:
-            text += data[key] + " "
-        text = { 'text': text[:-1] }
-        text.update(data)
-        self.__rows.append(text)
+            text += self.__data[key] + " "
+        self.__data['text'] = text[:-1]
 
     def set_request(self, req_type):
         self.__req = QSqlQuery(DB.con())
@@ -59,14 +58,11 @@ class CompleterText:
             self.__req.prepare(text)
             self.__req_type = req_type
 
-    def get_rows(self):
-        return self.__rows
+    def get_text(self):
+        return self.__data['text']
 
-    def get_string_list(self):
-        l = []
-        for o in self.__rows:
-            l.append(o['text'])
-        return l
+    def get_data(self):
+        return self.__data
 
 DEBUG = True
 
@@ -75,7 +71,7 @@ class SaveDialog(QMainWindow, Ui_SaveDialog):
         QMainWindow.__init__(self, parent)
         self.setupUi(self)
         self.__collection = collection
-        self.__last_texts = {'name': '', 'card': ''}
+        self.__do_text_search = True
 
         global DEBUG
         if not DEBUG:
@@ -157,18 +153,18 @@ class SaveDialog(QMainWindow, Ui_SaveDialog):
 
     @pyqtSlot('QString')
     def on_main_text_changed(self, text):
+        if not self.__do_text_search:
+            self.__do_text_search = True
+            return
         ref = {
-            'name_edt': (self.name_edt_lines, 'name'),
-            'card_no_edt': (self.card_no_lines, 'card'),
+            'name_edt': self.name_edt_lines,
+            'card_no_edt': self.card_no_lines,
         }.get(self.sender().objectName(), None)
         if ref:
-            if self.__last_texts[ref[1]] == text:
-                return
-            self.__last_texts[ref[1]] = text
-            ref = ref[0]
             ref.update_data(text)
-            c = QCompleter(ref.get_string_list())
-            ref = self.sender().completer()
-            c.setCaseSensitivity(Qt.CaseInsensitive)
-            self.sender().setCompleter(c)
-            del ref
+            t = ref.get_text()
+            if t:
+                self.__do_text_search = False
+                edt = self.sender()
+                edt.setText(t)
+                edt.setSelection(len(text), len(t) - len(text))
