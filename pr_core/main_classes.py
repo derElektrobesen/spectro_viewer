@@ -65,6 +65,9 @@ class GraphCollection:
     def empty(self):
         return self.count() == 0
 
+    def __iter__(self):
+        return self.__graphs.__iter__()
+
 class MeasureCollection:
     def __init__(self):
         self.__measures = []
@@ -99,3 +102,6 @@ class MeasureCollection:
 
     def init_collection(self):
         return self.add_measure(GraphCollection())
+
+    def __iter__(self):
+        return self.__measures.__iter__()
