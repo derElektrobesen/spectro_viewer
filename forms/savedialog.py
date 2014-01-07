@@ -68,12 +68,15 @@ class CompleterModel(QStandardItemModel):
             self.__req.prepare(req)
             self.__req_type = req_type
 
+DEBUG = True
+
 class SaveDialog(QMainWindow, Ui_SaveDialog):
     def __init__(self, parent = None, collection = None):
         QMainWindow.__init__(self, parent)
         self.setupUi(self)
         self.__collection = collection
-        self.set_measure_box_value()
+        if not DEBUG:
+            self.set_measure_box_value()
         self.connect_slots()
         self.set_completers()
 
