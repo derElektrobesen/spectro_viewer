@@ -197,7 +197,7 @@ class SaveDialog(QMainWindow, Ui_SaveDialog):
 
     def get_indexes(self, index = -1):
         if index < 0:
-            index = self.measure_box.currentIndex()
+            index = self.measures_box.currentIndex()
         return self.measures_box.itemData(index)
 
     @pyqtSlot()
