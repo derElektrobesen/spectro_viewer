@@ -10,9 +10,10 @@ class MeasureWindow(QWidget, UI_MeasureForm):
         self.__inspector.set_slots(data_came_slot = self.on_data_came,
                 status_came_slot = self.on_status_came)
 
-    def on_data_came(self):
-        pass
+    def on_data_came(self, graph):
+        self.measure_viewer.set_graph(0, graph)
+        self.measure_viewer.render()
 
-    def on_status_came(self):
-        pass
+    def on_status_came(self, status):
+        print(repr(status))
 

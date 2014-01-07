@@ -10,6 +10,7 @@ from .cmnds import Commands
 class InspectorThread(QThread):
     status_str_came = pyqtSignal()
     data_block_came = pyqtSignal()
+    device_disconnected = pyqtSignal()
 
     def __init__(self, parent = None):
         QThread.__init__(self, parent)
@@ -39,14 +40,19 @@ class InspectorThread(QThread):
         block = b''
         while True:
             data = sock.recv(8192)
+            if not len(data):
+                self.stop()
+                self.device_disconnected.emit()
+                return
             block += data
             if block[-1] == Commands.data_ends_flag():
                 break
 
+        fl = block[0]
         block = block[1:-1]
-        if block[0] == Commands.data_start_flag():
+        if fl == Commands.data_start_flag():
             self.on_data_block_came(block)
-        elif block[0] == Commands.status_start_flag():
+        elif fl == Commands.status_start_flag():
             self.on_status_block_came(block)
 
     def on_data_block_came(self, block):
@@ -81,15 +87,37 @@ class DeviceInspector(QObject):
         self.__inspector_thread.data_block_came.connect(self.on_data_came)
         self.__inspector_thread.status_str_came.connect(self.on_status_came)
         self.__data_came_slot = self.__status_came_slot = None
+        self.__connected = False
         self.connect()
 
     def connect(self):
-        self.__socket.connect(('127.0.0.1', Settings.device_port))
-        self.__inspector_thread.set_sock(self.__socket)
-        self.__inspector_thread.start()
+        try:
+            self.__socket.connect(('127.0.0.1', Settings.device_port))
+            self.__inspector_thread.set_sock(self.__socket)
+            self.__inspector_thread.start()
+            self.__connected = True
+        except ConnectionRefusedError as e:
+            print("Can't to connect to device")
+
+    def __send_cmd(self, cmd):
+        if self.__connected:
+            self.__socket.send(cmd)
+
+    def set_exp_time(self, time):
+        self.__send_cmd(Commands.set_exp_time_cmd(time))
+
+    def set_work_mode(self, mode):
+        self.__send_cmd(Commands.set_work_mode_cmd(mode))
+
+    def start_metering(self):
+        self.__send_cmd(Commands.start_metering_cmd())
+
+    def stop_metering(self):
+        self.__send_cmd(Commands.stop_metering_cmd())
 
     def set_slots(self, data_came_slot = None, status_came_slot = None):
-        self.__data_came_slot = self.__status_came_slot = None
+        self.__data_came_slot = data_came_slot
+        self.__status_came_slot = status_came_slot
 
     @pyqtSlot()
     def on_data_came(self):

@@ -46,14 +46,15 @@ class States:
 
 class DeviceStatus(QObject):
     def __init__(self, state = States.inactive, mode = Modes.single, frames_count = 0, exp_time = 0):
+        QObject.__init__(self)
         self.__mode = mode
         self.__state = state
         self.__frames_count = frames_count
         self.__exp_time = exp_time
 
     def copy(self):
-        return DeviceStatus(state = self.state, mode = self.mode,
-                frames_count = self.frames_count, exp_time = self.exp_time)
+        return DeviceStatus(state = self.__state, mode = self.__mode,
+                frames_count = self.__frames_count, exp_time = self.__exp_time)
 
     def __str__(self):
         return _tr("DeviceStatus",
@@ -65,15 +66,15 @@ class DeviceStatus(QObject):
                 States.stopping:    _tr("State", "Остановка"),
                 States.stopped:     _tr("State", "Остановлен"),
                 States.connecting:  _tr("State", "Подключение"),
-            }[self.state], mode = {
+            }[self.__state], mode = {
                 Modes.single:       _tr("Modes", "Одиночный"),
                 Modes.continues:    _tr("Modes", "Непрерывный"),
-            }[self.mode]))
+            }[self.__mode]))
 
     def __repr__(self):
         return _tr("DeviceStatus",
             "{start} Кадров/с: {frames}; Время эксп.: {exp}".format(
-            frames = self.frames_count, exp = self.exp_time, start = self.__str__()))
+            frames = self.__frames_count, exp = self.__exp_time, start = self.__str__()))
     
     @property
     def state(self):

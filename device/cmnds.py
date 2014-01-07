@@ -13,11 +13,7 @@ class Commands:
     def start_metering_cmd(): return b's>'
 
     @staticmethod
-    def stop_metering(): return b'p>'
-
-    @staticmethod
-    def interpret_device_state(cmd):
-        pass
+    def stop_metering_cmd(): return b'p>'
 
     @staticmethod
     def data_ends_flag(): return 62     # >
@@ -49,4 +45,4 @@ class Commands:
         exp = float(block[pos + 1:])
 
         return DeviceStatus(mode = mode, state = state,
-                frames_count = frames_count, exp_time = exp)
+                frames_count = frames, exp_time = exp)
