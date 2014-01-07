@@ -40,6 +40,10 @@ class GraphCollection:
 
     def add_graph(self, gr):
         self.__graphs.insert(0, gr)
+        return self
+
+    def remove_graph(self, index):
+        self.__graphs.pop(index)
 
     def get_graph(self, index):
         return self.__graphs[index]
@@ -52,3 +56,4 @@ class GraphCollection:
             else:
                 r += gr
         r /= len(self.__graphs)
+        return r

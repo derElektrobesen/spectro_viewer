@@ -2,7 +2,7 @@ from PyQt4.QtGui import *
 from PyQt4.QtCore import *
 from .measure_widget import Ui_measure_widget as UI_MeasureForm
 from device import DeviceInspector
-from pr_core import translate
+from pr_core import translate, GraphCollection
 from device import Modes, States
 
 class MeasureWindow(QWidget, UI_MeasureForm):
@@ -11,11 +11,15 @@ class MeasureWindow(QWidget, UI_MeasureForm):
         self.setupUi(self)
         self.__inspector = DeviceInspector()
         self.__can_start = False
+        self.__collection = GraphCollection()
         self.__inspector.set_slots(data_came_slot = self.__on_data_came,
                 status_came_slot = self.__on_status_came)
         QObject.connect(self.start_measure_btn, SIGNAL("clicked()"), self.__start_btn_pressed)
         QObject.connect(self.continiously_chb, SIGNAL("stateChanged(int)"), self.__mode_changed)
         QObject.connect(self.exposition_time_spb, SIGNAL("valueChanged(int)"), self.__exp_time_changed)
+
+    def __save_graph(self, gr):
+        self.__collection.add_graph(gr)
 
     def __on_data_came(self, graph):
         self.measure_viewer.set_graph(0, graph)
