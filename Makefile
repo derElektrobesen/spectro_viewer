@@ -37,7 +37,7 @@ $(DEST_DIR)/measure_widget.py: $(DEST_DIR)/measure_widget.bak
 	$(call MACRO,from widgets import MeasureWidget,$^,$(DEST_DIR)/measure_widget.py)
 
 $(DEST_DIR)/save_dialog.py: $(DEST_DIR)/save_dialog.bak
-	$(call MACRO,from widgets import MeasureWidget,$^,$(DEST_DIR)/save_dialog.py)
+	$(call MACRO,from widgets import MeasureWidget\nfrom widgets import LineEdit,$^,$(DEST_DIR)/save_dialog.py)
 
 clean:
 	rm -f $(FORMS:%=$(DEST_DIR)/%.py) $(FORMS:%=$(DEST_DIR)/%.bak)

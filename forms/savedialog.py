@@ -156,6 +156,11 @@ class SaveDialog(QMainWindow, Ui_SaveDialog):
         if not self.__do_text_search:
             self.__do_text_search = True
             return
+
+        edt = self.sender()
+        if edt.is_backspace_pressed():
+            return
+
         ref = {
             'name_edt': self.name_edt_lines,
             'card_no_edt': self.card_no_lines,
@@ -165,6 +170,5 @@ class SaveDialog(QMainWindow, Ui_SaveDialog):
             t = ref.get_text()
             if t:
                 self.__do_text_search = False
-                edt = self.sender()
                 edt.setText(t)
                 edt.setSelection(len(text), len(t) - len(text))
