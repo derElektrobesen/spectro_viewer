@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Обработка результатов</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">
@@ -102,6 +102,9 @@
       <property name="value">
        <number>100</number>
       </property>
+      <property name="textVisible">
+       <bool>false</bool>
+      </property>
       <property name="format">
        <string/>
       </property>
@@ -145,7 +148,7 @@
          </spacer>
         </item>
         <item>
-         <widget class="QPushButton" name="ok_btn">
+         <widget class="QPushButton" name="save_btn">
           <property name="text">
            <string>Сохранить</string>
           </property>
@@ -181,5 +184,22 @@
   </customwidget>
  </customwidgets>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>pushButton_4</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>704</x>
+     <y>453</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>378</x>
+     <y>239</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

@@ -3,7 +3,7 @@ from PyQt4.QtCore import *
 from .measure_widget import Ui_measure_widget as UI_MeasureForm
 from .savedialog import SaveDialog
 from device import DeviceInspector
-from pr_core import translate, GraphCollection
+from pr_core import translate, MeasureCollection
 from device import Modes, States
 
 class MeasureWindow(QWidget, UI_MeasureForm):
@@ -12,7 +12,7 @@ class MeasureWindow(QWidget, UI_MeasureForm):
         self.setupUi(self)
         self.__inspector = DeviceInspector()
         self.__can_start = False
-        self.__collection = GraphCollection()
+        self.__collection = MeasureCollection()
         self.__inspector.set_slots(data_came_slot = self.__on_data_came,
                 status_came_slot = self.__on_status_came)
         self.bind_slots()
@@ -72,7 +72,7 @@ class MeasureWindow(QWidget, UI_MeasureForm):
                 translate("yes", "Да"), translate("no", "Нет"))
         if res == 0:
             del self.__collection
-            self.__collection = GraphCollection()
+            self.__collection = MeasureCollection()
 
     @pyqtSlot(int)
     def __exp_time_changed(self, val):
@@ -82,6 +82,7 @@ class MeasureWindow(QWidget, UI_MeasureForm):
     def __start_btn_pressed(self):
         if self.__can_start:
             self.__inspector.start_metering()
+            self.__collection.init_collection()
         else:
             self.__inspector.stop_metering()
 
@@ -91,5 +92,5 @@ class MeasureWindow(QWidget, UI_MeasureForm):
 
     @pyqtSlot()
     def __show_collection(self):
-        d = SaveDialog(self)
+        d = SaveDialog(self, self.__collection)
         d.show()

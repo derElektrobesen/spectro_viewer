@@ -67,10 +67,10 @@ class GraphCollection:
 
 class MeasureCollection:
     def __init__(self):
-        self.__measures = None
+        self.__measures = []
 
     def add_measure(self, m):
-        self.__measures.inser(0, m)
+        self.__measures.insert(0, m)
         return self
 
     def remove_measure(self, index):
@@ -82,9 +82,20 @@ class MeasureCollection:
 
     def set_measure(self, index, measure):
         self.__measures[index] = measure
+        return self
 
     def count(self):
         return len(self.__measures)
 
     def empty(self):
         return self.count() == 0
+
+    def add_to_measure(self, index, graph):
+        self.__measures[index].add_graph(graph)
+        return self
+
+    def add_graph(self, gr):
+        return self.add_to_measure(0, gr)
+
+    def init_collection(self):
+        return self.add_measure(GraphCollection())
