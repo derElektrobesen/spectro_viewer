@@ -54,14 +54,24 @@ class CompleterText:
         text = None
         if req_type == ReqType.select_cards:
             text = 'call search_card(?)'
+            self.__keys = ['lastname', 'name', 'middlename']
         elif req_type == ReqType.select_names:
             text = 'call search_name(?)'
+            self.__keys = ['card']
         if text:
             self.__req.prepare(text)
             self.__req_type = req_type
 
     def get_text(self):
         return self.__data and self.__data['text']
+
+    def get_other_text(self):
+        t = ''
+        if self.__data:
+            for key in self.__keys:
+                t += self.__data[key] + " "
+            t = t[:-1]
+        return t
 
     def get_data(self):
         return self.__data
@@ -167,10 +177,12 @@ class SaveDialog(QMainWindow, Ui_SaveDialog):
             'name_edt': self.name_edt_lines,
             'card_no_edt': self.card_no_lines,
         }.get(self.sender().objectName(), None)
+        other = self.name_edt if ref == self.card_no_lines else self.card_no_edt
         if ref:
             ref.update_data(text)
             t = ref.get_text()
             if t:
                 self.__do_text_search = False
+                other.setText(ref.get_other_text())
                 edt.setText(t)
                 edt.setSelection(len(text), len(t) - len(text))
