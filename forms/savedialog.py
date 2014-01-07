@@ -24,6 +24,11 @@ class SaveDialog(QMainWindow, Ui_SaveDialog):
             for j in range(measure.count()):
                 self.measures_box.addItem(format_str % (i + 1, j + 1), { 'measure': i, 'graph': j })
 
+        self.on_index_changed(0)
+
     @pyqtSlot(int)
     def on_index_changed(self, index):
         index = self.measures_box.itemData(index)
+        gr = self.__collection.get_measure(index['measure']).get_graph(index['graph'])
+        self.cur_measure_wgt.set_graph("{measure}-{graph}".format(**index), gr)
+        self.cur_measure_wgt.render()

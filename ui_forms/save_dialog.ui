@@ -76,7 +76,7 @@
      </layout>
     </item>
     <item>
-     <widget class="MeasureWidget" name="cur_mesure_wgt" native="true">
+     <widget class="MeasureWidget" name="cur_measure_wgt" native="true">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
         <horstretch>0</horstretch>
