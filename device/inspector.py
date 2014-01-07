@@ -21,7 +21,6 @@ class InspectorThread(QThread):
 
     def run(self):
         while self.__can_work:
-            print("Run")
             if not self.__sock:
                 self.msleep(1000)
             else:

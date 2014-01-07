@@ -44,6 +44,7 @@ class GraphCollection:
 
     def remove_graph(self, index):
         self.__graphs.pop(index)
+        return self
 
     def get_graph(self, index):
         return self.__graphs[index]
@@ -60,6 +61,30 @@ class GraphCollection:
 
     def count(self):
         return len(self.__graphs)
+
+    def empty(self):
+        return self.count() == 0
+
+class MeasureCollection:
+    def __init__(self):
+        self.__measures = None
+
+    def add_measure(self, m):
+        self.__measures.inser(0, m)
+        return self
+
+    def remove_measure(self, index):
+        self.__measures.pop(index)
+        return self
+
+    def get_measure(self, index):
+        return self.__measures[index]
+
+    def set_measure(self, index, measure):
+        self.__measures[index] = measure
+
+    def count(self):
+        return len(self.__measures)
 
     def empty(self):
         return self.count() == 0

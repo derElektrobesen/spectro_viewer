@@ -13,13 +13,10 @@ from forms import MainWindow
 if __name__ == "__main__":
     app = QApplication(sys.argv)
 
-    try:
-        wnd = MainWindow()
-        act = QAction("DB_connected", wnd)
-        act.triggered.connect(wnd.load_database)
-        wnd.show()
-        sql_con = MySQL('root', 'tashkent', act)
-        app.exec_()
-        sql_con.close_connection()
-    except Exception as e:
-        print(str(e))
+    wnd = MainWindow()
+    act = QAction("DB_connected", wnd)
+    act.triggered.connect(wnd.load_database)
+    wnd.show()
+    sql_con = MySQL('root', 'tashkent', act)
+    app.exec_()
+    sql_con.close_connection()
