@@ -20,12 +20,18 @@ class Graph:
     def __concat__(self, gr):
         def add(x, y): return x + y
         def f(arr_1, arr_2): return tuple(map(add, arr_1, arr_2))
-        self.__graph = f(self.__graph[0], gr[0]), f(self.__graph[1], gr[1])
-        return self
+        return Graph(data = (f(self.__graph[0], gr[0]), f(self.__graph[1], gr[1])))
 
     def __truediv__(self, num):
         def f(arr): return tuple(map(lambda x: x / num, arr))
-        self.__graph = f(self.__graph[0]), f(self.__graph[1])
+        return Graph(data = (f(self.__graph[0]), f(self.__graph[1])))
+
+    def __iadd__(self, gr):
+        self.__data = (self + gr).get_data()
+        return self
+
+    def __idiv__(self, num):
+        self.__data = (self / num).get_data()
         return self
 
 class GraphCollection:
@@ -33,7 +39,16 @@ class GraphCollection:
         self.__graphs = []
 
     def add_graph(self, gr):
-        self.__graph.insert(0, gr)
+        self.__graphs.insert(0, gr)
 
     def get_graph(self, index):
-        return self.__graph[index]
+        return self.__graphs[index]
+
+    def avarage_graphs(self):
+        r = None
+        for gr in self.__graphs:
+            if not r:
+                r = gr
+            else:
+                r += gr
+        r /= len(self.__graphs)
