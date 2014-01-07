@@ -4,7 +4,8 @@ FORMS = \
 	client_widget \
 	main_form \
 	measure_widget \
-	login_form
+	login_form \
+	save_dialog
 
 FORMS_DIR = ui_forms
 DEST_DIR = forms
@@ -34,6 +35,9 @@ $(DEST_DIR)/client_widget.py: $(DEST_DIR)/client_widget.bak
 
 $(DEST_DIR)/measure_widget.py: $(DEST_DIR)/measure_widget.bak
 	$(call MACRO,from widgets import MeasureWidget,$^,$(DEST_DIR)/measure_widget.py)
+
+$(DEST_DIR)/save_dialog.py: $(DEST_DIR)/save_dialog.bak
+	$(call MACRO,from widgets import MeasureWidget,$^,$(DEST_DIR)/save_dialog.py)
 
 clean:
 	rm -f $(FORMS:%=$(DEST_DIR)/%.py) $(FORMS:%=$(DEST_DIR)/%.bak)
