@@ -1,7 +1,72 @@
 from .save_dialog import Ui_MainWindow as Ui_SaveDialog
-from PyQt4.QtGui import QMainWindow
+from PyQt4.QtGui import QMainWindow, QStandardItemModel
 from PyQt4.QtCore import QObject, pyqtSlot, SIGNAL
+from PyQt4.QtSql import QSqlQuery
 from pr_core import translate
+from db import DB
+import re
+
+class ReqType:
+    select_cards = 0
+    select_names = 1
+
+class CompleterModel(QStandardItemModel):
+    def __init__(self, parent = None):
+        QObject.QAbstractItemModel.__init__(self, parent)
+        self.__req = None
+        self.__select = QSqlQuery(DB.con())
+        self.__select.prepare("select id, lastname, name, middlename, card_no from filtered_names")
+        self.__old_rows = {}
+        self.__rows = {}
+        self.setSortRole(0)
+
+    def update_data(self, text):
+        if self.__req:
+            p = re.compile('\s+')
+            p.sub(text, ' ')
+            self.__req.bindValue(0, text)
+            self.__req.exec_()
+            self.__req.finish()
+
+            q = self.__select
+            q.exec_()
+            while q.next():
+                self.add_row({
+                    'id': q.value(0),
+                    'lastname': q.value(1),
+                    'name': q.value(2),
+                    'middlename': q.value(3),
+                    'card': q.value(4),
+                })
+            q.finish()
+
+            for key, value in self.__old_rows.items():
+                if key not in self.__rows:
+                    self.takeRow(value.index().row())
+
+    def add_row(self, row):
+        if data['id'] not in self.__old_rows:
+            row = []
+            items = ['lastname', 'name', 'middlename'] if self.__req_type == ReqType.select_names else []
+            items += ['card']
+            for key in items:
+                row.append(QStandardItem(data[key]))
+            self.appendRow(row)
+            self.__rows[data['id']] = row[0]
+        else:
+            self.__rows[data['id']] = self.__old_rows[data['id']]
+        self.sort(self.sortRole())
+
+    def set_request(self, req_type):
+        self.__req = QSqlQuery(DB.con())
+        text = None
+        if req_type == ReqType.select_cards:
+            text = 'call search_card("?")'
+        elif req_type == ReqType.select_names:
+            text = 'call filter_names("?")'
+        if text:
+            self.__req.prepare(req)
+            self.__req_type = req_type
 
 class SaveDialog(QMainWindow, Ui_SaveDialog):
     def __init__(self, parent = None, collection = None):
@@ -10,6 +75,7 @@ class SaveDialog(QMainWindow, Ui_SaveDialog):
         self.__collection = collection
         self.set_measure_box_value()
         self.connect_slots()
+        self.set_completers()
 
     def connect_slots(self):
         QObject.connect(self.measures_box, SIGNAL("currentIndexChanged(int)"), self.on_index_changed)
@@ -39,6 +105,9 @@ class SaveDialog(QMainWindow, Ui_SaveDialog):
 
     def set_progress(self, val):
         self.progressBar.setValue(val)
+
+    def set_completers(self):
+        pass
 
     @pyqtSlot()
     def on_remove_graph_btn_clicked(self):
