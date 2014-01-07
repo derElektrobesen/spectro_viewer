@@ -2,16 +2,9 @@ from PyQt4.QtGui import *
 from PyQt4.QtCore import pyqtSlot
 from PyQt4.QtSql import QSqlQuery, QSqlDatabase, QSql
 from db import DB
+from pr_core import translate
 import os
 import re
-
-try:
-    _encoding = QApplication.UnicodeUTF8
-    def _tr(context, text, disambig = None):
-        return QApplication.translate(context, text, disambig, _encoding)
-except AttributeError:
-    def _tr(context, text, disambig = None):
-        return QApplication.translate(context, text, disambig)
 
 # TODO
 class ButtonDelegate(QStyledItemDelegate):
@@ -23,8 +16,8 @@ class ButtonDelegate(QStyledItemDelegate):
         widget.setGeometry(option.rect)
 
 class ClientTableModel(QStandardItemModel):
-    __columns = [_tr('clienttablemodel', 'Фамилия'), _tr('clienttablemodel', 'Имя'),
-                 _tr('clienttablemodel', 'Отчество'), _tr('clienttablemodel', 'Номер карты')]
+    __columns = [translate('clienttablemodel', 'Фамилия'), translate('clienttablemodel', 'Имя'),
+                 translate('clienttablemodel', 'Отчество'), translate('clienttablemodel', 'Номер карты')]
     __query = None
     __pid = os.getpid()
     __rows = {}

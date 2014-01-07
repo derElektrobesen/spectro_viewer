@@ -7,13 +7,15 @@ class MeasureWindow(QWidget, UI_MeasureForm):
         QWidget.__init__(self, parent)
         self.setupUi(self)
         self.__inspector = DeviceInspector()
-        self.__inspector.set_slots(data_came_slot = self.on_data_came,
-                status_came_slot = self.on_status_came)
+        self.__inspector.set_slots(data_came_slot = self.__on_data_came,
+                status_came_slot = self.__on_status_came)
 
-    def on_data_came(self, graph):
+    def __on_data_came(self, graph):
         self.measure_viewer.set_graph(0, graph)
         self.measure_viewer.render()
 
-    def on_status_came(self, status):
+    def __on_status_came(self, status):
         print(repr(status))
 
+    def __set_start_btn_state(self, state):
+        pass

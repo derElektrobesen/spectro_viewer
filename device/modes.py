@@ -1,13 +1,6 @@
 from PyQt4.QtCore import QObject, pyqtSlot, pyqtSignal
 from PyQt4.QtGui import QApplication
-
-try:
-    _encoding = QApplication.UnicodeUTF8
-    def _tr(context, text, disambig = None):
-        return QApplication.translate(context, text, disambig, _encoding)
-except AttributeError:
-    def _tr(context, text, disambig = None):
-        return QApplication.translate(context, text, disambig)
+from pr_core import translate
 
 def _composed(*decs):
     def deco(f):
@@ -57,22 +50,22 @@ class DeviceStatus(QObject):
                 frames_count = self.__frames_count, exp_time = self.__exp_time)
 
     def __str__(self):
-        return _tr("DeviceStatus",
+        return translate("DeviceStatus",
             "Статус: {state}; Режим: {mode};".format(
             state = {
-                States.inactive:    _tr("State", "Неактивен"),
-                States.starting:    _tr("State", "Старт"),
-                States.metering:    _tr("State", "Измерение"),
-                States.stopping:    _tr("State", "Остановка"),
-                States.stopped:     _tr("State", "Остановлен"),
-                States.connecting:  _tr("State", "Подключение"),
+                States.inactive:    translate("State", "Неактивен"),
+                States.starting:    translate("State", "Старт"),
+                States.metering:    translate("State", "Измерение"),
+                States.stopping:    translate("State", "Остановка"),
+                States.stopped:     translate("State", "Остановлен"),
+                States.connecting:  translate("State", "Подключение"),
             }[self.__state], mode = {
-                Modes.single:       _tr("Modes", "Одиночный"),
-                Modes.continues:    _tr("Modes", "Непрерывный"),
+                Modes.single:       translate("Modes", "Одиночный"),
+                Modes.continues:    translate("Modes", "Непрерывный"),
             }[self.__mode]))
 
     def __repr__(self):
-        return _tr("DeviceStatus",
+        return translate("DeviceStatus",
             "{start} Кадров/с: {frames}; Время эксп.: {exp}".format(
             frames = self.__frames_count, exp = self.__exp_time, start = self.__str__()))
     
