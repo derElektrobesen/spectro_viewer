@@ -65,6 +65,9 @@ class CompleterText:
     def get_text(self):
         return self.__data and self.__data['text']
 
+    def get_id(self):
+        return self.__data and self.__data['id']
+
     def get_other_text(self):
         t = ''
         if self.__data:
@@ -94,8 +97,6 @@ class SaveDialog(QMainWindow, Ui_SaveDialog):
 
     def connect_slots(self):
         QObject.connect(self.measures_box, SIGNAL("currentIndexChanged(int)"), self.on_index_changed)
-        QObject.connect(self.remove_measure_btn, SIGNAL("clicked()"), self.on_remove_graph_btn_clicked)
-        QObject.connect(self.average_btn, SIGNAL("clicked()"), self.on_average_btn_clicked)
         QObject.connect(self.name_edt, SIGNAL("textChanged(QString)"), self.on_main_text_changed)
         QObject.connect(self.card_no_edt, SIGNAL("textChanged(QString)"), self.on_main_text_changed)
 
@@ -133,7 +134,7 @@ class SaveDialog(QMainWindow, Ui_SaveDialog):
         self.card_no_lines = m
 
     @pyqtSlot()
-    def on_remove_graph_btn_clicked(self):
+    def on_remove_measure_btn_clicked(self):
         self.set_progress(0)
         if self.measures_box.count() > 1:
             i = self.measures_box.currentIndex()
@@ -186,3 +187,18 @@ class SaveDialog(QMainWindow, Ui_SaveDialog):
                 other.setText(ref.get_other_text())
                 edt.setText(t)
                 edt.setSelection(len(text), len(t) - len(text))
+
+    def incorrect_user(self):
+        print("Failed")
+
+    @pyqtSlot()
+    def on_save_btn_clicked(self):
+        cli_id = None
+        for confirmator, edt in (
+                (self.name_edt_lines, self.name_edt),
+                (self.card_no_lines, self.card_no_edt)):
+            confirmator.update_data(edt.text())
+            if not cli_id:
+                cli_id = confirmator.get_id()
+            elif confirmator.get_id() != cli_id or not cli_id:
+                return self.incorrect_user()
