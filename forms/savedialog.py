@@ -1,6 +1,6 @@
 from .save_dialog import Ui_MainWindow as Ui_SaveDialog
-from PyQt4.QtGui import QMainWindow, QStandardItemModel
-from PyQt4.QtCore import QObject, pyqtSlot, SIGNAL
+from PyQt4.QtGui import QMainWindow, QStandardItemModel, QStandardItem, QCompleter
+from PyQt4.QtCore import QObject, pyqtSlot, SIGNAL, Qt
 from PyQt4.QtSql import QSqlQuery
 from pr_core import translate
 from db import DB
@@ -10,15 +10,12 @@ class ReqType:
     select_cards = 0
     select_names = 1
 
-class CompleterModel(QStandardItemModel):
+class CompleterText:
     def __init__(self, parent = None):
-        QObject.QAbstractItemModel.__init__(self, parent)
         self.__req = None
         self.__select = QSqlQuery(DB.con())
         self.__select.prepare("select id, lastname, name, middlename, card_no from filtered_names")
-        self.__old_rows = {}
-        self.__rows = {}
-        self.setSortRole(0)
+        self.__rows = []
 
     def update_data(self, text):
         if self.__req:
@@ -27,6 +24,8 @@ class CompleterModel(QStandardItemModel):
             self.__req.bindValue(0, text)
             self.__req.exec_()
             self.__req.finish()
+
+            self.__rows = []
 
             q = self.__select
             q.exec_()
@@ -40,33 +39,34 @@ class CompleterModel(QStandardItemModel):
                 })
             q.finish()
 
-            for key, value in self.__old_rows.items():
-                if key not in self.__rows:
-                    self.takeRow(value.index().row())
-
-    def add_row(self, row):
-        if data['id'] not in self.__old_rows:
-            row = []
-            items = ['lastname', 'name', 'middlename'] if self.__req_type == ReqType.select_names else []
-            items += ['card']
-            for key in items:
-                row.append(QStandardItem(data[key]))
-            self.appendRow(row)
-            self.__rows[data['id']] = row[0]
-        else:
-            self.__rows[data['id']] = self.__old_rows[data['id']]
-        self.sort(self.sortRole())
+    def add_row(self, data):
+        items = ['lastname', 'name', 'middlename', 'card']
+        text = ''
+        for key in items:
+            text += data[key] + " "
+        text = { 'text': text[:-1] }
+        text.update(data)
+        self.__rows.append(text)
 
     def set_request(self, req_type):
         self.__req = QSqlQuery(DB.con())
         text = None
         if req_type == ReqType.select_cards:
-            text = 'call search_card("?")'
+            text = 'call search_card(?)'
         elif req_type == ReqType.select_names:
-            text = 'call filter_names("?")'
+            text = 'call filter_names(?)'
         if text:
-            self.__req.prepare(req)
+            self.__req.prepare(text)
             self.__req_type = req_type
+
+    def get_rows(self):
+        return self.__rows
+
+    def get_string_list(self):
+        l = []
+        for o in self.__rows:
+            l.append(o['text'])
+        return l
 
 DEBUG = True
 
@@ -75,8 +75,11 @@ class SaveDialog(QMainWindow, Ui_SaveDialog):
         QMainWindow.__init__(self, parent)
         self.setupUi(self)
         self.__collection = collection
+
+        global DEBUG
         if not DEBUG:
             self.set_measure_box_value()
+
         self.connect_slots()
         self.set_completers()
 
@@ -84,6 +87,8 @@ class SaveDialog(QMainWindow, Ui_SaveDialog):
         QObject.connect(self.measures_box, SIGNAL("currentIndexChanged(int)"), self.on_index_changed)
         QObject.connect(self.remove_measure_btn, SIGNAL("clicked()"), self.on_remove_graph_btn_clicked)
         QObject.connect(self.average_btn, SIGNAL("clicked()"), self.on_average_btn_clicked)
+        QObject.connect(self.name_edt, SIGNAL("textChanged(QString)"), self.on_main_text_changed)
+        QObject.connect(self.card_no_edt, SIGNAL("textChanged(QString)"), self.on_main_text_changed)
 
     def set_collection(self, collection):
         self.__collection = collection
@@ -110,13 +115,13 @@ class SaveDialog(QMainWindow, Ui_SaveDialog):
         self.progressBar.setValue(val)
 
     def set_completers(self):
-        m = CompleterModel()
+        m = CompleterText()
         m.set_request(ReqType.select_names)
-        self.name_edt.setCompleter(QCompleter(m))
+        self.name_edt_lines = m
 
-        m = CompleterModel()
+        m = CompleterText()
         m.set_request(ReqType.select_cards)
-        self.card_no_edt.setCompleter(QCompleter(m))
+        self.card_no_lines = m
 
     @pyqtSlot()
     def on_remove_graph_btn_clicked(self):
@@ -148,3 +153,15 @@ class SaveDialog(QMainWindow, Ui_SaveDialog):
             gr = self.__collection.get_measure(index['measure']).get_graph(index['graph'])
             self.cur_measure_wgt.set_graph("{measure}-{graph}".format(**index), gr)
             self.cur_measure_wgt.render()
+
+    @pyqtSlot('QString')
+    def on_main_text_changed(self, text):
+        ref = {
+            'name_edt': self.name_edt_lines,
+            'card_no_edt': self.card_no_lines,
+        }.get(self.sender().objectName(), None)
+        if ref:
+            ref.update_data(text)
+            c = QCompleter(ref.get_string_list())
+            c.setCaseSensitivity(Qt.CaseInsensitive)
+            self.sender().setCompleter(c)
