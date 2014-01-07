@@ -1,6 +1,7 @@
 from PyQt4.QtGui import *
 from PyQt4.QtCore import *
 from .measure_widget import Ui_measure_widget as UI_MeasureForm
+from .savedialog import SaveDialog
 from device import DeviceInspector
 from pr_core import translate, GraphCollection
 from device import Modes, States
@@ -14,11 +15,15 @@ class MeasureWindow(QWidget, UI_MeasureForm):
         self.__collection = GraphCollection()
         self.__inspector.set_slots(data_came_slot = self.__on_data_came,
                 status_came_slot = self.__on_status_came)
+        self.bind_slots()
+
+    def bind_slots(self):
         QObject.connect(self.start_measure_btn, SIGNAL("clicked()"), self.__start_btn_pressed)
         QObject.connect(self.clean_hist_btn, SIGNAL("clicked()"), self.__clean_collection)
         QObject.connect(self.process_measure_btn, SIGNAL("clicked()"), self.__show_collection)
         QObject.connect(self.continiously_chb, SIGNAL("stateChanged(int)"), self.__mode_changed)
         QObject.connect(self.exposition_time_spb, SIGNAL("valueChanged(int)"), self.__exp_time_changed)
+        QObject.connect(self, SIGNAL("destroyed()"), self.on_close)
 
     def __on_data_came(self, graph):
         self.measure_viewer.set_graph(0, graph)
@@ -56,6 +61,10 @@ class MeasureWindow(QWidget, UI_MeasureForm):
         self.exposition_time_spb.setValue(int(time))
 
     @pyqtSlot()
+    def on_close(self):
+        self.__inspector.disconnect()
+
+    @pyqtSlot()
     def __clean_collection(self):
         res = QMessageBox.information(self, translate("clean_collection", "Очистить историю"),
                 translate("clean_collection", "Вы уверены, что хотите удалить все " +
@@ -82,4 +91,5 @@ class MeasureWindow(QWidget, UI_MeasureForm):
 
     @pyqtSlot()
     def __show_collection(self):
-        pass
+        d = SaveDialog(self)
+        d.show()

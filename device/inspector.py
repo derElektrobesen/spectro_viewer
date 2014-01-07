@@ -21,6 +21,7 @@ class InspectorThread(QThread):
 
     def run(self):
         while self.__can_work:
+            print("Run")
             if not self.__sock:
                 self.msleep(1000)
             else:
@@ -126,3 +127,8 @@ class DeviceInspector(QObject):
     @pyqtSlot()
     def on_status_came(self):
         return self.__status_came_slot and self.__status_came_slot(self.__inspector_thread.get_last_status())
+
+    def disconnect(self):
+        if self.__inspector_thread:
+            self.__inspector_thread.stop()
+            self.__inspector_thread.wait()
