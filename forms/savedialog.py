@@ -108,7 +108,7 @@ class SaveDialog(QMainWindow, Ui_SaveDialog):
 
         self.__queries = {
             'add_visit':    f('select add_visit(?)'),
-            'add_graph':    f('select add_graph(?, ?, ?)'),
+            'add_graph':    f('select add_graph(?, ?, ?, ?)'),
             'add_point':    f('insert into Data(diagram_id, point) values (?, POINT(?, ?))')
         }
 
@@ -147,7 +147,7 @@ class SaveDialog(QMainWindow, Ui_SaveDialog):
         m.set_request(ReqType.select_cards)
         self.card_no_lines = m
 
-    def save_graph(self, cli_id, text):
+    def save_graph(self, cli_id, text, is_intact):
         q = self.__queries['add_visit']
         q.bindValue(0, cli_id)
         q.exec_()
@@ -163,9 +163,11 @@ class SaveDialog(QMainWindow, Ui_SaveDialog):
         q.bindValue(0, visit_id)
         q.bindValue(1, Settings.device_type)
         q.bindValue(2, text)
+        q.bindValue(3, 'intact' if is_intact else 'other')
         q.exec_()
         q.next()
         gr_id = q.value(0)
+        q.finish()
         q = self.__queries['add_point']
 
         l = len(gr)
@@ -261,6 +263,13 @@ class SaveDialog(QMainWindow, Ui_SaveDialog):
 
     @pyqtSlot()
     def on_save_btn_clicked(self):
+        return self.do_save(False)
+
+    @pyqtSlot()
+    def on_save_intact_btn_clicked(self):
+        return self.do_save(True)
+
+    def do_save(self, is_intact):
         cli_id = None
         for confirmator, edt in (
                 (self.name_edt_lines, self.name_edt),
@@ -276,7 +285,7 @@ class SaveDialog(QMainWindow, Ui_SaveDialog):
         if not len(text):
             return self.incorrect_pnt()
 
-        self.__visit_id = self.save_graph(cli_id, text)
+        self.__visit_id = self.save_graph(cli_id, text, is_intact)
 
     @pyqtSlot()
     def on_close_btn_pressed(self):

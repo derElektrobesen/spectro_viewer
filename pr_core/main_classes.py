@@ -18,17 +18,21 @@ class Graph:
     def get_data(self):
         return self.__data
 
+    @staticmethod
+    def from_list(l):
+        return Graph(data = (tuple(l[0]), tuple(l[1])))
+
     def read_from_db(self, visit_id):
         if not self.__q:
             self.__q = QSqlQuery(DB.con())
-            self.__q.prepare("select x, y from diagrams where id = ?")
+            self.__q.prepare("select x, y from spectrs where id = ?")
         self.__q.bindValue(0, visit_id)
         self.__q.exec_()
         self.__data = [[],[]]
         while q.next():
             self.__data[0].append(q.value(0))
             self.__data[1].append(q.value(1))
-        self.__data = (tuple(self.__data[0]), tuple(self.__data[1]))
+        self.__data = Graph.from_list(self.__data).get_data()
 
     def __str__(self):
         return str(self.__data)

@@ -33,6 +33,12 @@ class Params:
     @_st_prop
     def a2_end(): return 7050.0
 
+    @_st_prop
+    def normalize_step(): return 10
+
+    @_st_prop
+    def normalize_offset(): return 50
+
 class SpectorsCollection:
     def __init__(self):
         self.__graphs = {}

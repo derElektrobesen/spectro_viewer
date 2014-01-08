@@ -4,13 +4,18 @@ from .measurewidget import SpectorsCollection, Params
 
 class BlueCollection(SpectorsCollection):
     def __process_graph_bounds(self, gr):
-        print("Blue")
         return gr
 
 class RedCollection(SpectorsCollection):
     def __process_graph_bounds(self, gr):
-        print("Red")
-        return gr
+        data = gr.get_data()
+        new_data = [[], []]
+        i = 0
+        while data[0][i] <= Params.red_int_stop:
+            if data[0][i] >= Params.red_int_stop:
+                new_data[0].append(data[0][i])
+                new_data[1].append(data[1][i])
+        return Graph.from_list(new_data)
 
 class BlueSpW(MainSpW, BlueCollection):
     def __init__(self, parent = None):

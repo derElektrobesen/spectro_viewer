@@ -163,6 +163,13 @@
          </spacer>
         </item>
         <item>
+         <widget class="QPushButton" name="save_intact_btn">
+          <property name="text">
+           <string>Сохранить как интакт</string>
+          </property>
+         </widget>
+        </item>
+        <item>
          <widget class="QPushButton" name="save_btn">
           <property name="text">
            <string>Сохранить</string>

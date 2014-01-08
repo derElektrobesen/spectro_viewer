@@ -3,6 +3,7 @@ from PyQt4.QtCore import *
 from PyQt4.QtSql import QSqlQuery
 from db import DB
 from .client_widget import Ui_patient_widget as UI_PatientForm
+from pr_core import translate
 
 class PatientWindow(QWidget, UI_PatientForm):
     def __init__(self, parent = None, pid = None):
@@ -39,11 +40,13 @@ class PatientWindow(QWidget, UI_PatientForm):
             'age': q.value(4),
             'eco_count': q.value(5),
             'diagnosis': q.value(6),
-            'incomes': 0 if q.value(7).isNull else q.value(7),
+            'incomes': q.value(7),
         }
+        if not self.__info['incomes']:
+            self.__info['incomes'] = 0
         q.finish()
 
-        q.prepare("select date, point, device, gr_id from diagrams_list where id = ?")
+        q.prepare("select date, point, device, gr_id, point_type from diagrams_list where id = ?")
         q.bindValue(0, self.__pid)
         q.exec_()
         points = []
@@ -54,8 +57,10 @@ class PatientWindow(QWidget, UI_PatientForm):
                 'point': q.value(1),
                 'device': q.value(2),
                 'graph_id': q.value(3),
+                'type': q.value(4),
             })
-            self.add_point(i, q.value(0) + " | " + q.value(1))
+            self.add_point(i, q.value(0) + " | " + q.value(1) + \
+                    (translate("intact", " (интакт)") if q.value(4) == 'intact' else ''))
             i += 1
         q.finish()
 
