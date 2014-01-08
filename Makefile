@@ -11,7 +11,7 @@ FORMS = \
 FORMS_DIR = ui_forms
 DEST_DIR = forms
 
-MACRO = perl -pe 's/^(from.*\.py.*)$$//; if (/^from PyQt4/) { print "$(1)\n"; }' < $(2) > $(3)
+MACRO = perl -pe 's/^(from.*\.py.*)$$//; if (/^from PyQt4/) { my $$a = "$(1)"; $$a =~ s/\n\s+/\n/g; print "$$a\n"; }' < $(2) > $(3)
 
 $(DEST_DIR)/%.bak: $(FORMS_DIR)/%.ui
 	pyuic4 $^ -o $(DEST_DIR)/$*.bak
@@ -35,7 +35,14 @@ $(DEST_DIR)/clients_table_widget.py: $(DEST_DIR)/clients_table_widget.bak
 	$(call MACRO,from widgets import ClientsTable,$^,$(DEST_DIR)/clients_table_widget.py)
 
 $(DEST_DIR)/client_widget.py: $(DEST_DIR)/client_widget.bak
-	$(call MACRO,from widgets import MeasureWidget,$^,$(DEST_DIR)/client_widget.py)
+	$(call MACRO,from widgets import BlueSpW\n\
+		from widgets import RedSpW\n\
+		from widgets import OrigBlueSpW\n\
+		from widgets import OrigRedSpW\n\
+		from widgets import DiffBlueSpW\n\
+		from widgets import DiffRedSpW\n\
+		from widgets import IntactBlueSpW\n\
+		from widgets import IntactRedSpW,$^,$(DEST_DIR)/client_widget.py)
 
 $(DEST_DIR)/measure_widget.py: $(DEST_DIR)/measure_widget.bak
 	$(call MACRO,from widgets import MeasureWidget,$^,$(DEST_DIR)/measure_widget.py)

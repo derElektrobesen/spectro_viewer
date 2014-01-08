@@ -10,6 +10,13 @@ class PatientWindow(QWidget, UI_PatientForm):
         self.setupUi(self)
         self.__pid = pid
         self.__info = {}
+        self.__graphs = []
+
+        self.__widgets = (
+            self.blue_sp_w, self.red_sp_w, self.original_blue_sp_w,
+            self.original_red_sp_w, self.differentiated_blue_sp_w,
+            self.differentiated_red_sp_w, self.intact_blue_sp_w,
+            self.intact_red_sp_w)
 
         self.get_main_info()
         self.set_main_values()

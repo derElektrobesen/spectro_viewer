@@ -47,10 +47,10 @@
          <item>
           <widget class="QWidget" name="gridWidget" native="true">
            <layout class="QGridLayout" name="gridLayout">
-            <item row="2" column="0">
-             <widget class="QLabel" name="label_3">
+            <item row="3" column="1">
+             <widget class="QLabel" name="diagnosis_lbl">
               <property name="text">
-               <string>Посещения</string>
+               <string>TextLabel</string>
               </property>
              </widget>
             </item>
@@ -61,10 +61,31 @@
               </property>
              </widget>
             </item>
-            <item row="3" column="1">
-             <widget class="QLabel" name="diagnosis_lbl">
+            <item row="1" column="1">
+             <widget class="QLabel" name="age_lbl">
               <property name="text">
                <string>TextLabel</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QLabel" name="name_lbl">
+              <property name="text">
+               <string>TextLabel</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="label_3">
+              <property name="text">
+               <string>Посещения</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="0">
+             <widget class="QLabel" name="label">
+              <property name="text">
+               <string>Пациент</string>
               </property>
              </widget>
             </item>
@@ -79,27 +100,6 @@
              <widget class="QLabel" name="label_2">
               <property name="text">
                <string>Возраст</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="1">
-             <widget class="QLabel" name="name_lbl">
-              <property name="text">
-               <string>TextLabel</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="0">
-             <widget class="QLabel" name="label">
-              <property name="text">
-               <string>Пациент</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="1">
-             <widget class="QLabel" name="age_lbl">
-              <property name="text">
-               <string>TextLabel</string>
               </property>
              </widget>
             </item>
@@ -194,7 +194,7 @@
               </widget>
              </item>
              <item>
-              <widget class="MeasureWidget" name="blue_sp_w" native="true">
+              <widget class="BlueSpW" name="blue_sp_w" native="true">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                  <horstretch>0</horstretch>
@@ -224,7 +224,7 @@
               </widget>
              </item>
              <item>
-              <widget class="MeasureWidget" name="red_sp_w" native="true">
+              <widget class="RedSpW" name="red_sp_w" native="true">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                  <horstretch>0</horstretch>
@@ -254,7 +254,7 @@
               </widget>
              </item>
              <item>
-              <widget class="MeasureWidget" name="original_blue_sp_w" native="true">
+              <widget class="OrigBlueSpW" name="original_blue_sp_w" native="true">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                  <horstretch>0</horstretch>
@@ -284,7 +284,7 @@
               </widget>
              </item>
              <item>
-              <widget class="MeasureWidget" name="original_red_sp_w" native="true">
+              <widget class="OrigRedSpW" name="original_red_sp_w" native="true">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                  <horstretch>0</horstretch>
@@ -394,7 +394,7 @@
               </widget>
              </item>
              <item>
-              <widget class="MeasureWidget" name="differentiated_blue_sp_w" native="true">
+              <widget class="IntactBlueSpW" name="differentiated_blue_sp_w" native="true">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                  <horstretch>0</horstretch>
@@ -424,7 +424,7 @@
               </widget>
              </item>
              <item>
-              <widget class="MeasureWidget" name="differentiated_red_sp_w" native="true">
+              <widget class="DiffRedSpW" name="differentiated_red_sp_w" native="true">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                  <horstretch>0</horstretch>
@@ -454,7 +454,7 @@
               </widget>
              </item>
              <item>
-              <widget class="MeasureWidget" name="intact_blue_sp_w" native="true">
+              <widget class="IntactBlueSpW" name="intact_blue_sp_w" native="true">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                  <horstretch>0</horstretch>
@@ -484,7 +484,7 @@
               </widget>
              </item>
              <item>
-              <widget class="MeasureWidget" name="intact_red_sp_w" native="true">
+              <widget class="IntactRedSpW" name="intact_red_sp_w" native="true">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                  <horstretch>0</horstretch>
@@ -507,9 +507,45 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>MeasureWidget</class>
+   <class>BlueSpW</class>
    <extends>QWidget</extends>
-   <header>measurewidget.py</header>
+   <header>bluespw.py</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>RedSpW</class>
+   <extends>QWidget</extends>
+   <header>redspw.py</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>OrigBlueSpW</class>
+   <extends>QWidget</extends>
+   <header>origbluespw.py</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>OrigRedSpW</class>
+   <extends>QWidget</extends>
+   <header>origredspw.py</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>DiffRedSpW</class>
+   <extends>QWidget</extends>
+   <header>diffredspw.py</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>IntactBlueSpW</class>
+   <extends>QWidget</extends>
+   <header>intactbluespw.py</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>IntactRedSpW</class>
+   <extends>QWidget</extends>
+   <header>intactredspw.py</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
