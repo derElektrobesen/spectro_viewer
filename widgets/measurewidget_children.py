@@ -1,6 +1,7 @@
 from PyQt4.QtGui import *
 from .measurewidget_parents import *
 from .measurewidget import SpectorsCollection, Params
+from pr_core import Graph
 
 class BlueCollection(SpectorsCollection):
     def __process_graph_bounds(self, gr):
@@ -8,14 +9,13 @@ class BlueCollection(SpectorsCollection):
 
 class RedCollection(SpectorsCollection):
     def process_graph_bounds(self, gr):
-        print("Hello")
         data = gr.get_data()
         new_data = [[], []]
         i = 0
-        while data[0][i] <= Params.red_int_stop:
-            if data[0][i] >= Params.red_int_stop:
-                new_data[0].append(data[0][i])
-                new_data[1].append(data[1][i])
+        i_s = gr.search_index(Params.red_int_start)
+        i_e = gr.search_index(Params.red_int_end)
+        new_data[0] = data[0][i_s:i_e + 1]
+        new_data[1] = data[1][i_s:i_e + 1]
         return Graph.from_list(new_data)
 
 class BlueSpW(MainSpW, BlueCollection):

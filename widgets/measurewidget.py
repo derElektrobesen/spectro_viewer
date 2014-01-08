@@ -15,29 +15,14 @@ def _composed(*decs):
 _st_prop = _composed(staticmethod, property)
 
 class Params:
-    @_st_prop
-    def red_int_start(): return 6600.0
-
-    @_st_prop
-    def red_int_end(): return 8000.0
-
-    @_st_prop
-    def a1_start(): return 6650.0
-
-    @_st_prop
-    def a1_end(): return 6750.0
-
-    @_st_prop
-    def a2_start(): return 6950.0
-
-    @_st_prop
-    def a2_end(): return 7050.0
-
-    @_st_prop
-    def normalize_step(): return 10
-
-    @_st_prop
-    def normalize_offset(): return 50
+    red_int_start = 6600.0
+    red_int_end = 8000.0
+    a1_start = 6650.0
+    a1_end = 6750.0
+    a2_start = 6950.0
+    a2_end = 7050.0
+    normalize_step = 10
+    normalize_offset = 50
 
 class SpectorsCollection:
     def __init__(self):
@@ -45,6 +30,8 @@ class SpectorsCollection:
 
     def add_graph(self, key, graph):
         graph = self.process_graph_bounds(graph)
+
+        d = graph.get_data()
         self.__graphs[key] = { 'graph': graph, }
 
     def remove_graph(self, key):
@@ -66,24 +53,28 @@ class SpectorsCollection:
 class MeasureWidget(FigureCanvas, SpectorsCollection):
     def __init__(self, parent = None):
         self.__fig = Figure()
-        self.__axes = self.__fig.add_subplot(111)
         FigureCanvas.__init__(self, self.__fig)
         SpectorsCollection.__init__(self)
+        self.__axes = self.__fig.add_subplot(111)
         self.setParent(parent)
 
     def set_color(self, key, color):
         if key in self.graphs():
             self.__graph[key]['color'] = color
 
-    def __calculate_graph(self, gr):
-        return gr   # virtual method
-
     def render(self):
         plt = self.__axes
         plt.cla()
+        xmin, xmax = 99999999, -1
         for gr in self.graphs().values():
-            line = plt.plot(*(gr['graph'].get_data()))
+            data = gr['graph'].get_data()
+            if data[0][0] < xmin:
+                xmin = data[0][0]
+            if data[0][-1] > xmax:
+                xmax = data[0][-1]
+            line = plt.plot(*data)
             if 'color' in gr:
                 plt.setp(line, color = gr['color'])
-        self.__fig.subplots_adjust(left=0.1, right=0.9, top=0.9, bottom=0.1)
+        plt.set_xlim(xmin, xmax)
+        self.__fig.subplots_adjust(left=0.07, right=0.95, top=0.9, bottom=0.1)
         self.draw()

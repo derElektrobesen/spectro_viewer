@@ -34,17 +34,22 @@ class Graph:
             self.__data[1].append(self.__q.value(1))
         self.__data = Graph.from_list(self.__data).get_data()
 
+    def search_index(self, xval):
+        i = 0
+        while self.__data[0][i] <= xval:
+            i += 1
+            if i >= self.__data[0][i]:
+                i = -1
+                break
+        return i
+
     def count_s(self, start = None, stop = None):
         start_index = 0
         stop_index = len(self) - 1
         if start:
-            while self.__data[0][start_index] <= start:
-                start_index += 1
-            start_index -= 1
+            start_index = self.seach_index(start)
         if stop:
-            while self.__data[0][stop_index] >= stop:
-                stop_index -= 1
-            stop_index += 1
+            stop_index = self.search_index(stop)
         r = 0
         for i in range(start_index, stop_index):
             r += self.__data[1][i]
