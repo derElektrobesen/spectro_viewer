@@ -42,9 +42,10 @@ class PatientWindow(QWidget, UI_PatientForm):
             'diagnosis': q.value(6),
             'incomes': q.value(7),
         }
+        q.finish()
+
         if not self.__info['incomes']:
             self.__info['incomes'] = 0
-        q.finish()
 
         q.prepare("select date, point, device, gr_id, point_type from diagrams_list where id = ?")
         q.bindValue(0, self.__pid)
