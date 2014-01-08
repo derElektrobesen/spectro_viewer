@@ -1,12 +1,10 @@
 from PyQt4.QtGui import *
-from PyQt4.QtCore import pyqtSlot, QObject, SIGNAL
+from PyQt4.QtCore import pyqtSlot, pyqtSignal, QObject, SIGNAL
 from PyQt4.QtSql import QSqlQuery, QSqlDatabase, QSql
 from db import DB
 from pr_core import translate
 import os
 import re
-
-from .patientwindow import PatientWindow
 
 # TODO
 class ButtonDelegate(QStyledItemDelegate):
@@ -88,6 +86,8 @@ class ClientTableModel(QStandardItemModel):
 
 class ClientsTable(QTableView):
     __model = ClientTableModel()
+    show_patient_signal = pyqtSignal(int)
+
     def __init__(self, parent = None):
         QTableView.__init__(self, parent)
         self.setModel(self.__model)
@@ -106,4 +106,4 @@ class ClientsTable(QTableView):
     @pyqtSlot("QModelIndex")
     def on_row_double_clicked(self, index):
         data = self.__model.get_row_id(index)
-
+        self.show_patient_signal.emit(data)

@@ -7,6 +7,8 @@ class MainWindow(QMainWindow, UI_MainWindow):
     def __init__(self, parent = None):
         QMainWindow.__init__(self, parent)
         self.setupUi(self)
+        self.clients_w.clients_table.show_patient_signal.connect(self.add_patient_tab)
+        self.__tabs = {}
 
     @pyqtSlot()
     def load_database(self):
@@ -17,3 +19,7 @@ class MainWindow(QMainWindow, UI_MainWindow):
         callback = lambda: self.clients_w.update_database()
         wnd = AddPatientWindow(self, callback)
         wnd.show()
+
+    @pyqtSlot(int)
+    def add_patient_tab(self, pid):
+        self.tabWidget.addTab("Hello")
