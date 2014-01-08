@@ -13,12 +13,11 @@ class ExtraInfoWindow(QMainWindow, Ui_MainWindow):
 
     @pyqtSlot()
     def on_close_btn_pressed(self):
-        f = lambda b: 1 if b else 0
         data = {
             'cycle':    self.cycle.value(),
             'endo':     self.endometrium.text(),
-            'scars':    f(self.scars.isChecked()),
-            'fibrosis': f(self.fibrosis.isChecked()),
+            'scars':    int(self.scars.isChecked()),
+            'fibrosis': int(self.fibrosis.isChecked()),
             'onco':     self.oncology.toPlainText(),
             'research': self.researches.toPlainText(),
             'treat':    self.treatment.toPlainText(),
@@ -32,6 +31,5 @@ class ExtraInfoWindow(QMainWindow, Ui_MainWindow):
         for key, val in data.items():
             q.bindValue(":" + key, val)
         q.exec_()
-        print(q.lastError().text())
         q.finish()
         self.close()
