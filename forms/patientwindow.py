@@ -60,7 +60,9 @@ class PatientWindow(QWidget, UI_PatientForm):
     def set_main_values(self):
         ref = self.__info
         self.name_lbl.setText(ref['lastname'] + ' ' + ref['name'] + " " + ref['middlename'])
-        self.age_lbl.setText(ref['age'])
+        self.age_lbl.setText(str(ref['age']))
+        self.incomes_lbl.setText(str(ref['incomes']))
+        self.diagnosis_lbl.setText(ref['diagnosis'])
 
     def add_point(self, index, text):
         print(text)
