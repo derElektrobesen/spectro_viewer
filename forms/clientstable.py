@@ -1,10 +1,12 @@
 from PyQt4.QtGui import *
-from PyQt4.QtCore import pyqtSlot
+from PyQt4.QtCore import pyqtSlot, QObject, SIGNAL
 from PyQt4.QtSql import QSqlQuery, QSqlDatabase, QSql
 from db import DB
 from pr_core import translate
 import os
 import re
+
+from .patientwindow import PatientWindow
 
 # TODO
 class ButtonDelegate(QStyledItemDelegate):
@@ -50,6 +52,13 @@ class ClientTableModel(QStandardItemModel):
             self.__rows[data['id']] = self.__old_rows[data['id']]
         self.sort(self.sortRole())
 
+    def get_row_id(self, model_index):
+        item = self.item(model_index.row())
+        for key, row in self.__rows.items():
+            if item == row:
+                return key
+        return None
+
     def update_pattern(self, new_pat = ''):
         if not self.__query:
             return
@@ -83,6 +92,7 @@ class ClientsTable(QTableView):
         QTableView.__init__(self, parent)
         self.setModel(self.__model)
         self.horizontalHeader().setResizeMode(QHeaderView.Stretch)
+        QObject.connect(self, SIGNAL("doubleClicked(QModelIndex)"), self.on_row_double_clicked)
 
     def load_names(self):
         return self.__model.load_names()
@@ -92,3 +102,8 @@ class ClientsTable(QTableView):
         p = re.compile('\s+')
         p.sub(pat, ' ')
         return self.__model.update_pattern(pat)
+
+    @pyqtSlot("QModelIndex")
+    def on_row_double_clicked(self, index):
+        data = self.__model.get_row_id(index)
+
