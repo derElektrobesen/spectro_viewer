@@ -5,7 +5,8 @@ FORMS = \
 	main_form \
 	measure_widget \
 	login_form \
-	save_dialog
+	save_dialog \
+	extra_info_window
 
 FORMS_DIR = ui_forms
 DEST_DIR = forms
@@ -26,6 +27,9 @@ $(DEST_DIR)/add_patient_form.py: $(DEST_DIR)/add_patient_form.bak
 
 $(DEST_DIR)/login_form.py: $(DEST_DIR)/login_form.bak
 	cp $^ $(DEST_DIR)/login_form.py
+
+$(DEST_DIR)/extra_info_window.py: $(DEST_DIR)/extra_info_window.bak
+	cp $^ $(DEST_DIR)/extra_info_window.py
 
 $(DEST_DIR)/clients_table_widget.py: $(DEST_DIR)/clients_table_widget.bak
 	$(call MACRO,from widgets import ClientsTable,$^,$(DEST_DIR)/clients_table_widget.py)

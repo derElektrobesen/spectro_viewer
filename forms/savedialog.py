@@ -1,4 +1,3 @@
-from .save_dialog import Ui_MainWindow as Ui_SaveDialog
 from PyQt4.QtGui import QMainWindow, QStandardItemModel, QStandardItem, QMessageBox
 from PyQt4.QtCore import QObject, pyqtSlot, SIGNAL, Qt
 from PyQt4.QtSql import QSqlQuery
@@ -6,6 +5,8 @@ from pr_core import translate
 from db import DB
 import re
 from settings import Settings
+from .save_dialog import Ui_MainWindow as Ui_SaveDialog
+from .extrainfowindow import ExtraInfoWindow
 
 class ReqType:
     select_cards = 0
@@ -182,6 +183,12 @@ class SaveDialog(QMainWindow, Ui_SaveDialog):
 
         DB.con().commit()
 
+        return visit_id
+
+    def save_extra_info(self, visit_id):
+        wnd = ExtraInfoWindow(self, visit_id)
+        wnd.show()
+
     @pyqtSlot()
     def on_remove_measure_btn_clicked(self):
         self.set_progress(0)
@@ -265,4 +272,6 @@ class SaveDialog(QMainWindow, Ui_SaveDialog):
         text = self.pnt_edt.text().strip()
         if not len(text):
             return self.incorrect_pnt()
-        self.save_graph(cli_id, text)
+
+        vid = self.save_graph(cli_id, text)
+        self.save_extra_info(vid)
