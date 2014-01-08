@@ -187,8 +187,10 @@ class SaveDialog(QMainWindow, Ui_SaveDialog):
         return visit_id
 
     def save_extra_info(self):
-        wnd = ExtraInfoWindow(self, self.__visit_id)
-        wnd.show()
+        if self.__visit_id:
+            wnd = ExtraInfoWindow(self, self.__visit_id)
+            wnd.show()
+        self.close()
 
     @pyqtSlot()
     def on_remove_measure_btn_clicked(self):
