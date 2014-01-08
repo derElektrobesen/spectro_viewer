@@ -32,7 +32,7 @@ $(DEST_DIR)/extra_info_window.py: $(DEST_DIR)/extra_info_window.bak
 	cp $^ $(DEST_DIR)/extra_info_window.py
 
 $(DEST_DIR)/clients_table_widget.py: $(DEST_DIR)/clients_table_widget.bak
-	$(call MACRO,from .clientstable import ClientsTable,$^,$(DEST_DIR)/clients_table_widget.py)
+	$(call MACRO,from widgets import ClientsTable,$^,$(DEST_DIR)/clients_table_widget.py)
 
 $(DEST_DIR)/client_widget.py: $(DEST_DIR)/client_widget.bak
 	$(call MACRO,from widgets import MeasureWidget,$^,$(DEST_DIR)/client_widget.py)
