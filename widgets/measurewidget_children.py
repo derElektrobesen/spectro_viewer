@@ -1,6 +1,6 @@
 from PyQt4.QtGui import *
 from .measurewidget_parents import *
-from .measurewidget import SpectorsCollection
+from .measurewidget import SpectorsCollection, Params
 
 class BlueCollection(SpectorsCollection):
     def __process_graph_bounds(self, gr):

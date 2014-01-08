@@ -14,7 +14,7 @@ def _composed(*decs):
 
 _st_prop = _composed(staticmethod, property)
 
-class __Params:
+class Params:
     @_st_prop
     def red_int_start(): return 6600.0
 

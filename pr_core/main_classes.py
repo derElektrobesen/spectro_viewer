@@ -1,5 +1,9 @@
+from PyQt4.QtSql import QSqlQuery
+from db import DB
+
 class Graph:
     def __init__(self, other = None, dev_data = None, data = None):
+        self.__q = None
         if other:
             self.__data = other.get_data()
         else:
@@ -13,6 +17,18 @@ class Graph:
 
     def get_data(self):
         return self.__data
+
+    def read_from_db(self, visit_id):
+        if not self.__q:
+            self.__q = QSqlQuery(DB.con())
+            self.__q.prepare("select x, y from diagrams where id = ?")
+        self.__q.bindValue(0, visit_id)
+        self.__q.exec_()
+        self.__data = [[],[]]
+        while q.next():
+            self.__data[0].append(q.value(0))
+            self.__data[1].append(q.value(1))
+        self.__data = (tuple(self.__data[0]), tuple(self.__data[1]))
 
     def __str__(self):
         return str(self.__data)
