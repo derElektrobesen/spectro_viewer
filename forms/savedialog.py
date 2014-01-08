@@ -157,7 +157,6 @@ class SaveDialog(QMainWindow, Ui_SaveDialog):
         gr = self.__collection.get_measure(index['measure']).get_graph(index['graph'])
 
         DB.con().transaction()
-
         q = self.__queries['add_graph']
         q.bindValue(0, visit_id)
         q.bindValue(1, Settings.device_type)
@@ -256,6 +255,8 @@ class SaveDialog(QMainWindow, Ui_SaveDialog):
         for confirmator, edt in (
                 (self.name_edt_lines, self.name_edt),
                 (self.card_no_lines, self.card_no_edt)):
+            if len(edt.text()) == 0:
+                return self.incorrect_user()
             confirmator.update_data(edt.text())
             if not cli_id:
                 cli_id = confirmator.get_id()
