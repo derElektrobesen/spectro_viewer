@@ -29,10 +29,29 @@ class Graph:
         self.__q.bindValue(0, visit_id)
         self.__q.exec_()
         self.__data = [[],[]]
-        while q.next():
-            self.__data[0].append(q.value(0))
-            self.__data[1].append(q.value(1))
+        while self.__q.next():
+            self.__data[0].append(self.__q.value(0))
+            self.__data[1].append(self.__q.value(1))
         self.__data = Graph.from_list(self.__data).get_data()
+
+    def count_s(self, start = None, stop = None):
+        start_index = 0
+        stop_index = len(self) - 1
+        if start:
+            while self.__data[0][start_index] <= start:
+                start_index += 1
+            start_index -= 1
+        if stop:
+            while self.__data[0][stop_index] >= stop:
+                stop_index -= 1
+            stop_index += 1
+        r = 0
+        for i in range(start_index, stop_index):
+            r += self.__data[1][i]
+        return r
+
+    def count_min(self):
+        return min(self.__data[1])
 
     def __str__(self):
         return str(self.__data)

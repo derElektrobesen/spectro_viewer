@@ -7,7 +7,8 @@ class BlueCollection(SpectorsCollection):
         return gr
 
 class RedCollection(SpectorsCollection):
-    def __process_graph_bounds(self, gr):
+    def process_graph_bounds(self, gr):
+        print("Hello")
         data = gr.get_data()
         new_data = [[], []]
         i = 0
@@ -20,9 +21,20 @@ class RedCollection(SpectorsCollection):
 class BlueSpW(MainSpW, BlueCollection):
     def __init__(self, parent = None):
         MainSpW.__init__(self, parent)
+        self.__ia = []
 
     def __calculate_graph(self, gr):
         return gr
+
+    def get_ia(self):
+        graphs = self.graphs()
+        def f(gr):
+            return gr.count_s(Params.a1_start, Params.a1_end) / \
+                   gr.count_s(Params.a2_start, Params.a2_end)
+        for key, val in graphs.items:
+            if key not in self.__ia:
+                self.__ia[key] = f(val['graph'])
+        return self.__ia
 
 class RedSpW(MainSpW, RedCollection):
     def __init__(self, parent = None):

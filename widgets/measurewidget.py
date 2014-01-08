@@ -44,7 +44,7 @@ class SpectorsCollection:
         self.__graphs = {}
 
     def add_graph(self, key, graph):
-        graph = self.__process_graph_bounds(graph)
+        graph = self.process_graph_bounds(graph)
         self.__graphs[key] = { 'graph': graph, }
 
     def remove_graph(self, key):
@@ -60,7 +60,7 @@ class SpectorsCollection:
     def graphs(self):
         return self.__graphs
 
-    def __process_graph_bounds(self, gr):
+    def process_graph_bounds(self, gr):
         return gr
 
 class MeasureWidget(FigureCanvas, SpectorsCollection):
@@ -68,6 +68,7 @@ class MeasureWidget(FigureCanvas, SpectorsCollection):
         self.__fig = Figure()
         self.__axes = self.__fig.add_subplot(111)
         FigureCanvas.__init__(self, self.__fig)
+        SpectorsCollection.__init__(self)
         self.setParent(parent)
 
     def set_color(self, key, color):

@@ -3,7 +3,7 @@ from PyQt4.QtCore import *
 from PyQt4.QtSql import QSqlQuery
 from db import DB
 from .client_widget import Ui_patient_widget as UI_PatientForm
-from pr_core import translate
+from pr_core import translate, Graph
 
 class PatientWindow(QWidget, UI_PatientForm):
     def __init__(self, parent = None, pid = None):
@@ -51,7 +51,6 @@ class PatientWindow(QWidget, UI_PatientForm):
         q.bindValue(0, self.__pid)
         q.exec_()
         points = []
-        i = 0
         while q.next():
             points.append({
                 'date': q.value(0),
@@ -59,10 +58,10 @@ class PatientWindow(QWidget, UI_PatientForm):
                 'device': q.value(2),
                 'graph_id': q.value(3),
                 'type': q.value(4),
+                'key': q.value(0) + q.value(1) + str(len(points)),
             })
-            self.add_point(i, q.value(0) + " | " + q.value(1) + \
+            points[-1]['checkbox'] = self.add_point(q.value(0) + " | " + q.value(1) + \
                     (translate("intact", " (интакт)") if q.value(4) == 'intact' else ''))
-            i += 1
         q.finish()
 
         w = QWidget()
@@ -82,11 +81,29 @@ class PatientWindow(QWidget, UI_PatientForm):
         self.incomes_lbl.setText(str(ref['incomes']))
         self.diagnosis_lbl.setText(ref['diagnosis'])
 
-    def add_point(self, index, text):
+    def add_point(self, text):
         chb = QCheckBox(text)
         QObject.connect(chb, SIGNAL("stateChanged(int)"), self.on_point_checked)
         self.points_sca.widget().layout().addWidget(chb)
+        return chb
 
     @pyqtSlot(int)
     def on_point_checked(self, state):
-        pass
+        chb = self.sender()
+        key = None
+        vid = None
+        for point in self.__info['points']:
+            if point['checkbox'] == chb:
+                key = point['key']
+                vid = point['graph_id']
+                break
+        gr = None
+        if state:
+            gr = Graph()
+            gr.read_from_db(vid)
+        for w in self.__widgets:
+            if state:
+                w.add_graph(key, gr)
+            else:
+                w.remove_graph(key)
+            w.render()
