@@ -2,6 +2,7 @@ from PyQt4.QtGui import *
 from PyQt4.QtCore import *
 from .main_form import Ui_MainWindow as UI_MainWindow
 from .addpatientwindow import AddPatientWindow
+from .patientwindow import PatientWindow
 
 class MainWindow(QMainWindow, UI_MainWindow):
     def __init__(self, parent = None):
@@ -22,4 +23,5 @@ class MainWindow(QMainWindow, UI_MainWindow):
 
     @pyqtSlot(int)
     def add_patient_tab(self, pid):
-        self.tabWidget.addTab("Hello")
+        wnd = PatientWindow(self, pid)
+        self.tabWidget.addTab(wnd, wnd.get_title())
