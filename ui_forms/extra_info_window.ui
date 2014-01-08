@@ -9,7 +9,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>315</width>
+    <width>447</width>
     <height>557</height>
    </rect>
   </property>
@@ -63,14 +63,14 @@
         </layout>
        </item>
        <item>
-        <widget class="QCheckBox" name="checkBox">
+        <widget class="QCheckBox" name="scars">
          <property name="text">
           <string>Рубцовые деформации</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QCheckBox" name="checkBox_2">
+        <widget class="QCheckBox" name="fibrosis">
          <property name="text">
           <string>Фиброз</string>
          </property>

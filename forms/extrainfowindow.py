@@ -13,7 +13,7 @@ class ExtraInfoWindow(QMainWindow, Ui_MainWindow):
 
     @pyqtSlot()
     def on_close_btn_pressed(self):
-        f = lambda b: "TRUE" if b else "FALSE"
+        f = lambda b: 1 if b else 0
         data = {
             'cycle':    self.cycle.value(),
             'endo':     self.endometrium.text(),
@@ -28,8 +28,10 @@ class ExtraInfoWindow(QMainWindow, Ui_MainWindow):
         q.prepare("insert into Treatment(visit_id, treatment, cycle_day, endometrium, " +
                 "scar, fibrosis, oncology, other_info) values (:visit, :treat, :cycle, " +
                 ":endo, :scars, :fibrosis, :onco, :research)")
-        for key, val in data:
-            q.bindValue(":" + key, value)
+
+        for key, val in data.items():
+            q.bindValue(":" + key, val)
         q.exec_()
+        print(q.lastError().text())
         q.finish()
         self.close()

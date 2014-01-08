@@ -87,6 +87,7 @@ class SaveDialog(QMainWindow, Ui_SaveDialog):
         self.setupUi(self)
         self.__collection = collection
         self.__do_text_search = True
+        self.__visit_id = 0
 
         self.set_measure_box_value()
 
