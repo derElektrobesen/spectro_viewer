@@ -39,7 +39,7 @@ class PatientWindow(QWidget, UI_PatientForm):
             'age': q.value(4),
             'eco_count': q.value(5),
             'diagnosis': q.value(6),
-            'incomes': q.value(7),
+            'incomes': 0 if q.value(7).isNull else q.value(7),
         }
         q.finish()
 

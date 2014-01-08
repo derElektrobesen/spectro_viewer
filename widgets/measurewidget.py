@@ -30,6 +30,9 @@ class MeasureWidget(FigureCanvas):
         if key in self.__graph:
             self.__graph[key]['color'] = color
 
+    def __calculate_graph(self, gr):
+        return gr   # virtual method
+
     def render(self):
         plt = self.__axes
         plt.cla()

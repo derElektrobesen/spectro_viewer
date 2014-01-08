@@ -1,34 +1,58 @@
-from .measurewidget import MeasureWidget
+from .measurewidget_parents import *
 from PyQt4.QtGui import *
 
-class BlueSpW(MeasureWidget):
+class BlueSpW(MainSpW):
     def __init__(self, parent = None):
-        MeasureWidget.__init__(self, parent)
+        MainSpW.__init__(self, parent)
 
-class RedSpW(MeasureWidget):
-    def __init__(self, parent = None):
-        MeasureWidget.__init__(self, parent)
+    def __calculate_graph(self, gr):
+        return gr
 
-class OrigBlueSpW(MeasureWidget):
+class RedSpW(MainSpW):
     def __init__(self, parent = None):
-        MeasureWidget.__init__(self, parent)
+        MainSpW.__init__(self, parent)
 
-class OrigRedSpW(MeasureWidget):
-    def __init__(self, parent = None):
-        MeasureWidget.__init__(self, parent)
+    def __calculate_graph(self, gr):
+        return gr
 
-class DiffBlueSpW(MeasureWidget):
+class OrigBlueSpW(OrigSpW):
     def __init__(self, parent = None):
-        MeasureWidget.__init__(self, parent)
+        OrigSpW.__init__(self, parent)
 
-class DiffRedSpW(MeasureWidget):
-    def __init__(self, parent = None):
-        MeasureWidget.__init__(self, parent)
+    def __calculate_graph(self, gr):
+        return gr
 
-class IntactBlueSpW(MeasureWidget):
+class OrigRedSpW(OrigSpW):
     def __init__(self, parent = None):
-        MeasureWidget.__init__(self, parent)
+        OrigSpW.__init__(self, parent)
 
-class IntactRedSpW(MeasureWidget):
+    def __calculate_graph(self, gr):
+        return gr
+
+class DiffBlueSpW(DiffSpW):
     def __init__(self, parent = None):
-        MeasureWidget.__init__(self, parent)
+        DiffSpW.__init__(self, parent)
+
+    def __calculate_graph(self, gr):
+        return gr
+
+class DiffRedSpW(DiffSpW):
+    def __init__(self, parent = None):
+        DiffSpW.__init__(self, parent)
+
+    def __calculate_graph(self, gr):
+        return gr
+
+class IntactBlueSpW(IntactSpW):
+    def __init__(self, parent = None):
+        IntactSpW.__init__(self, parent)
+
+    def __calculate_graph(self, gr):
+        return gr
+
+class IntactRedSpW(IntactSpW):
+    def __init__(self, parent = None):
+        IntactSpW.__init__(self, parent)
+
+    def __calculate_graph(self, gr):
+        return gr
