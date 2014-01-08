@@ -185,8 +185,8 @@ class SaveDialog(QMainWindow, Ui_SaveDialog):
 
         return visit_id
 
-    def save_extra_info(self, visit_id):
-        wnd = ExtraInfoWindow(self, visit_id)
+    def save_extra_info(self):
+        wnd = ExtraInfoWindow(self, self.__visit_id)
         wnd.show()
 
     @pyqtSlot()
@@ -273,5 +273,8 @@ class SaveDialog(QMainWindow, Ui_SaveDialog):
         if not len(text):
             return self.incorrect_pnt()
 
-        vid = self.save_graph(cli_id, text)
-        self.save_extra_info(vid)
+        self.__visit_id = self.save_graph(cli_id, text)
+
+    @pyqtSlot()
+    def on_close_btn_pressed(self):
+        self.save_extra_info()
