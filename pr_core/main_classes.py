@@ -44,8 +44,8 @@ class Graph:
     def __len__(self):
         return len(self.__data[0])
 
-    def next(self):
-        if self.__current_index > len(self):
+    def __next__(self):
+        if self.__current_index >= len(self):
             raise StopIteration
         self.__current_index += 1
         return self.__data[0][self.__current_index - 1], self.__data[1][self.__current_index - 1]
