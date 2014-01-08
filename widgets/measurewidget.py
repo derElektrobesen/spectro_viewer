@@ -23,6 +23,7 @@ class Params:
     a2_end = 7050.0
     normalize_step = 10
     normalize_offset = 50
+    diff_window = 5
 
 class SpectorsCollection:
     def __init__(self):
@@ -30,6 +31,7 @@ class SpectorsCollection:
 
     def add_graph(self, key, graph):
         graph = self.process_graph_bounds(graph)
+        graph = self.process_graph_data(graph)
 
         d = graph.get_data()
         self.__graphs[key] = { 'graph': graph, }
@@ -48,6 +50,9 @@ class SpectorsCollection:
         return self.__graphs
 
     def process_graph_bounds(self, gr):
+        return gr
+
+    def process_graph_data(self, gr):
         return gr
 
 class MeasureWidget(FigureCanvas, SpectorsCollection):

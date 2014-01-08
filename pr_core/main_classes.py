@@ -1,15 +1,20 @@
 from PyQt4.QtSql import QSqlQuery
 from db import DB
+import math
 
 class Graph:
-    def __init__(self, other = None, dev_data = None, data = None):
+    def __init__(self, other = None, dev_data = None, data = None, smoothed = False, do_smooth = True):
         self.__q = None
+        self.__smoothed = smoothed
         if other:
             self.__data = other.get_data()
+            self.__smoothed = other.is_smoothed()
         else:
             self.__data = data
             if dev_data:
                 self.compile_dev_data(dev_data)
+        if do_smooth:
+            self.__data = self.smooth().get_data()
 
     def compile_dev_data(self, data):
         data = tuple(map(float, data.decode('utf-8').split()))
@@ -42,6 +47,41 @@ class Graph:
                 i = -1
                 break
         return i
+
+    def is_smoothed(self):
+        return self.__smoothed
+
+    def smooth(self, window = 40):
+        if self.__smoothed:
+            return self
+
+        if fmod(window, 2) == 0:
+            window += 1
+
+        hw = (window - 1) / 2
+        data = self.__data[1]
+        rdata = [data[0]]
+
+        z, k1, k2 = 0, 0, 0
+        n = len(data)
+        for i in range(n):
+            tmp = 0
+            if i < hw:
+                k1 = 0
+                k2 = 2 * i
+                z = k2 + 1
+            elif (i + hw) > (n - 1):
+                k1 = 2 * i - n + 1
+                k2 = n - 1
+                z = k2 - k1 + 1
+            else:
+                k1 = i - hw
+                k2 = i + hw
+                z = window
+            for j in range(k1, k2 + 1):
+                tmp += data[j]
+            rdata.append(tmp / z)
+        return Graph(data = (self.__data[0], tuple(rdata)), smooted = True)
 
     def count_s(self, start = None, stop = None):
         start_index = 0

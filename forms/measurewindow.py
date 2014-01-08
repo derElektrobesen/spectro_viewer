@@ -24,8 +24,11 @@ class MeasureWindow(QWidget, UI_MeasureForm):
         QObject.connect(self.continiously_chb, SIGNAL("stateChanged(int)"), self.__mode_changed)
         QObject.connect(self.exposition_time_spb, SIGNAL("valueChanged(int)"), self.__exp_time_changed)
         QObject.connect(self, SIGNAL("destroyed()"), self.on_close)
+        QObject.connect(self.remove_voice_chb, SIGNAL("stateChanged(int)"), self.set_smooth_mode)
 
     def __on_data_came(self, graph):
+        if self.remove_voice_chb.isChecked():
+            graph = graph.smooth()
         self.measure_viewer.set_graph(0, graph)
         self.measure_viewer.render()
         self.__collection.add_graph(graph)
@@ -94,3 +97,7 @@ class MeasureWindow(QWidget, UI_MeasureForm):
     def __show_collection(self):
         d = SaveDialog(self, self.__collection)
         d.show()
+
+    @pyqtSlot(int)
+    def set_smooth_mode(self, enabled):
+        self.__on_data_came(self.__collection.get_graph(0))
