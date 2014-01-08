@@ -170,7 +170,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="pushButton_4">
+         <widget class="QPushButton" name="close_btn">
           <property name="text">
            <string>Закрыть</string>
           </property>
@@ -202,14 +202,14 @@
   <tabstop>pnt_edt</tabstop>
   <tabstop>measures_box</tabstop>
   <tabstop>save_btn</tabstop>
-  <tabstop>pushButton_4</tabstop>
+  <tabstop>close_btn</tabstop>
   <tabstop>remove_measure_btn</tabstop>
   <tabstop>average_btn</tabstop>
  </tabstops>
  <resources/>
  <connections>
   <connection>
-   <sender>pushButton_4</sender>
+   <sender>close_btn</sender>
    <signal>clicked()</signal>
    <receiver>MainWindow</receiver>
    <slot>close()</slot>
