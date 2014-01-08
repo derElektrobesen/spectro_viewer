@@ -34,8 +34,9 @@ class PatientWindow(QWidget, UI_PatientForm):
             'diagnosis': q.value(6),
             'incomes': q.value(7),
         }
+        q.finish()
 
-        q.prepare("select date, point, device, gr_id diagrams_list where id = ?")
+        q.prepare("select date, point, device, gr_id from diagrams_list where id = ?")
         q.bindValue(0, self.__pid)
         q.exec_()
         points = []
@@ -49,11 +50,15 @@ class PatientWindow(QWidget, UI_PatientForm):
             })
             self.add_point(i, q.value(0) + " | " + q.value(1))
             i += 1
+        q.finish()
+
+        w = QWidget()
+        w.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Expanding)
+        self.points_sca.widget().layout().addWidget(w)
 
         self.__info['points'] = tuple(points)
 
     def get_title(self):
-        print(self.__info)
         return self.__info['lastname'] + " " + self.__info['name'][0] + ". " + \
             self.__info['middlename'][0] + "."
 
@@ -65,7 +70,9 @@ class PatientWindow(QWidget, UI_PatientForm):
         self.diagnosis_lbl.setText(ref['diagnosis'])
 
     def add_point(self, index, text):
-        print(text)
+        chb = QCheckBox(text)
+        QObject.connect(chb, SIGNAL("stateChanged(int)"), self.on_point_checked)
+        self.points_sca.widget().layout().addWidget(chb)
 
     @pyqtSlot(int)
     def on_point_checked(self, state):
