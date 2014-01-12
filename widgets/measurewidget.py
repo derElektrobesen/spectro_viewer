@@ -46,6 +46,9 @@ class SpectorsCollection:
         self.clear()
         self.add_graph(key, graph)
 
+    def get_graph(self, key):
+        return self.__graphs[key]['graph'] if key in self.__graphs else None
+
     def graphs(self):
         return self.__graphs
 

@@ -54,8 +54,9 @@ class Graph:
     def smooth(self, window = 40):
         if self.__smoothed:
             return self
+        return self     # TODO
 
-        if fmod(window, 2) == 0:
+        if math.fmod(window, 2) == 0:
             window += 1
 
         hw = (window - 1) / 2
@@ -78,10 +79,10 @@ class Graph:
                 k1 = i - hw
                 k2 = i + hw
                 z = window
-            for j in range(k1, k2 + 1):
+            for j in range(int(k1), int(k2 + 1)):
                 tmp += data[j]
             rdata.append(tmp / z)
-        return Graph(data = (self.__data[0], tuple(rdata)), smooted = True)
+        return Graph(data = (self.__data[0], tuple(rdata[:len(self) - len(rdata)])), smoothed = True)
 
     def count_s(self, start = None, stop = None):
         start_index = 0
