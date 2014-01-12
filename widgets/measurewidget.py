@@ -24,7 +24,7 @@ class Params:
     normalize_step = 5.0
     normalize_offset = 50.0
     normalize_right_border = 8700.0
-    diff_window = 5
+    diff_window = 2
 
 class SpectorsCollection:
     def __init__(self):
