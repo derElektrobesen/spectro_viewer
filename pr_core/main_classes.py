@@ -1,6 +1,7 @@
 from PyQt4.QtSql import QSqlQuery
 from db import DB
 import math
+from numpy import intersect1d
 
 class Graph:
     def __init__(self, other = None, dev_data = None, data = None, smoothed = False, do_smooth = True):
@@ -142,9 +143,16 @@ class Graph:
         return self.__data[0][self.__current_index - 1], self.__data[1][self.__current_index - 1]
 
     def __sub__(self, other):
+        d = other.get_data()[0]
+        d1 = self.__data[0]
+        r = intersect1d(d, d1)
+        o1 = d.index(r[0])
+        o2 = d1.index(r[0])
+        d = other.get_data()[1]
+        d1 = self.__data[1]
+        r = [r, [d1[i + o2] - d[i + o1] for i in range(len(r))]]
+        return Graph.from_list(r)
         
-        return self
-
     def __eq__(self, other):
         if len(self) != len(other):
             return False
