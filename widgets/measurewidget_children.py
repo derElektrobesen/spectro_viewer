@@ -60,6 +60,7 @@ class OrigRedSpW(OrigSpW, RedCollection):
 class DiffBlueSpW(DiffSpW, BlueCollection):
     def __init__(self, parent = None):
         DiffSpW.__init__(self, parent)
+        print("Hello")
 
     def __calculate_graph(self, gr):
         return gr
