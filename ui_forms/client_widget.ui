@@ -400,7 +400,7 @@
               </widget>
              </item>
              <item>
-              <widget class="IntactBlueSpW" name="differentiated_blue_sp_w" native="true">
+              <widget class="DiffBlueSpW" name="differentiated_blue_sp_w" native="true">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                  <horstretch>0</horstretch>
@@ -552,6 +552,12 @@
    <class>IntactRedSpW</class>
    <extends>QWidget</extends>
    <header>intactredspw.py</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>DiffBlueSpW</class>
+   <extends>QWidget</extends>
+   <header>diffbluespw.py</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
