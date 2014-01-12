@@ -80,20 +80,24 @@ class Graph:
                 k2 = i + hw
                 z = window
             for j in range(int(k1), int(k2 + 1)):
-                tmp += data[j]
+                tmp += data[j if j < n else n - 1]
             rdata.append(tmp / z)
         return Graph(data = (self.__data[0], tuple(rdata[:len(self) - len(rdata)])), smoothed = True)
 
-    def count_s(self, start = None, stop = None):
-        start_index = 0
-        stop_index = len(self) - 1
+    def count_s(self, start = None, stop = None, min_y = None, start_index = None, stop_index = None):
+        if not start_index:
+            start_index = 0
+        if not stop_index:
+            stop_index = len(self) - 1
+        if not min_y:
+            min_y = min(self.__data[1])
         if start:
             start_index = self.seach_index(start)
         if stop:
             stop_index = self.search_index(stop)
         r = 0
         for i in range(start_index, stop_index):
-            r += self.__data[1][i]
+            r += self.__data[1][i] - min_y
         return r
 
     def count_min(self):

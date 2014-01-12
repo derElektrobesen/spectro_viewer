@@ -23,6 +23,7 @@ class Params:
     a2_end = 7050.0
     normalize_step = 10
     normalize_offset = 50
+    normalize_right_border = 8700.0
     diff_window = 5
 
 class SpectorsCollection:
