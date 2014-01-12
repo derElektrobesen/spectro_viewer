@@ -30,7 +30,9 @@ class SpectorsCollection:
     def __init__(self):
         self.__graphs = {}
 
-    def add_graph(self, key, graph):
+    def add_graph(self, key, graph, intact_gr):
+        self.__intact_gr = intact_gr
+
         graph = self.process_graph_bounds(graph)
         graph = self.process_graph_data(graph)
 
@@ -58,6 +60,9 @@ class SpectorsCollection:
 
     def process_graph_data(self, gr):
         return gr
+
+    def get_intact(self):
+        return self.__intact_gr
 
 class MeasureWidget(FigureCanvas, SpectorsCollection):
     def __init__(self, parent = None):

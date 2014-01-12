@@ -70,5 +70,8 @@ class IntactSpW(MeasureWidget, SpectorsCollection):
         MeasureWidget.__init__(self, parent)
         SpectorsCollection.__init__(self)
 
+    def __sub(self, gr, i_gr):
+        return gr - i_gr
+
     def process_graph_data(self, gr):
-        return gr
+        return self.__sub(gr, self.get_intact())

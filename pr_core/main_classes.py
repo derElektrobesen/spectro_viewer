@@ -28,11 +28,11 @@ class Graph:
     def from_list(l):
         return Graph(data = (tuple(l[0]), tuple(l[1])))
 
-    def read_from_db(self, visit_id):
+    def read_from_db(self, dia_id):
         if not self.__q:
             self.__q = QSqlQuery(DB.con())
             self.__q.prepare("select x, y from spectrs where id = ?")
-        self.__q.bindValue(0, visit_id)
+        self.__q.bindValue(0, dia_id)
         self.__q.exec_()
         self.__data = [[],[]]
         while self.__q.next():
@@ -56,6 +56,7 @@ class Graph:
     def smooth(self, window = 40):
         if self.__smoothed:
             return self
+        return self # TODO
 
         if math.fmod(window, 2) == 0:
             window += 1
@@ -139,6 +140,19 @@ class Graph:
             raise StopIteration
         self.__current_index += 1
         return self.__data[0][self.__current_index - 1], self.__data[1][self.__current_index - 1]
+
+    def __sub__(self, other):
+        
+        return self
+
+    def __eq__(self, other):
+        if len(self) != len(other):
+            return False
+        d = other.get_data()
+        for i in range(len(self)):
+            if self.__data[0][i] != d[0][i] or self.__data[1][i] != d[1][i]:
+                return False
+        return True
 
 class GraphCollection:
     def __init__(self, graphs = None):

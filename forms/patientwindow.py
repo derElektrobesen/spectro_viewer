@@ -12,6 +12,7 @@ class PatientWindow(QWidget, UI_PatientForm):
         self.__pid = pid
         self.__info = {}
         self.__graphs = []
+        self.__intacts = {}
 
         self.__widgets = (
             self.blue_sp_w, self.red_sp_w, self.original_blue_sp_w,
@@ -47,7 +48,7 @@ class PatientWindow(QWidget, UI_PatientForm):
         if not self.__info['incomes']:
             self.__info['incomes'] = 0
 
-        q.prepare("select date, point, device, gr_id, point_type from diagrams_list where id = ?")
+        q.prepare("select date, point, device, gr_id, point_type, intact_id from diagrams_list where id = ?")
         q.bindValue(0, self.__pid)
         q.exec_()
         points = []
@@ -58,6 +59,7 @@ class PatientWindow(QWidget, UI_PatientForm):
                 'device': q.value(2),
                 'graph_id': q.value(3),
                 'type': q.value(4),
+                'intact_id': q.value(5),
                 'key': q.value(0) + q.value(1) + str(len(points)),
             })
             points[-1]['checkbox'] = self.add_point(q.value(0) + " | " + q.value(1) + \
@@ -91,20 +93,24 @@ class PatientWindow(QWidget, UI_PatientForm):
     def on_point_checked(self, state):
         chb = self.sender()
         key = None
-        vid = None
+        i_id = None
         for point in self.__info['points']:
             if point['checkbox'] == chb:
                 key = point['key']
-                vid = point['graph_id']
+                gid = point['graph_id']
+                i_id = point['intact_id']
                 break
         gr = None
+        if i_id not in self.__intacts:
+            self.__intacts[i_id] = Graph()
+            self.__intacts[i_id].read_from_db(i_id)
         if state:
             gr = Graph()
-            gr.read_from_db(vid)
-            gr = gr.smooth()
+            gr.read_from_db(gid)
+            #gr = gr.smooth()
         for w in self.__widgets:
             if state:
-                w.add_graph(key, gr)
+                w.add_graph(key, gr, self.__intacts[i_id])
             else:
                 w.remove_graph(key)
             w.render()
