@@ -42,11 +42,12 @@ class Graph:
 
     def search_index(self, xval):
         i = 0
+        if xval <= self.__data[0][0]:
+            return 0
+        if xval >= self.__data[0][-1]:
+            return len(self.__data) - 1
         while self.__data[0][i] <= xval:
             i += 1
-            if i >= self.__data[0][i]:
-                i = -1
-                break
         return i
 
     def is_smoothed(self):

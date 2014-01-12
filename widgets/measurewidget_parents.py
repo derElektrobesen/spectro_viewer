@@ -18,7 +18,7 @@ class MainSpW(MeasureWidget, SpectorsCollection):
         j = offset
         i = offset
         min_y = min(data[1])
-        full_s = gr.count_s(min_y = min_y)
+        full_s = gr.count_s(min_y = min_y, stop = Params.normalize_right_border)
 
         while (i < len(data[1])):
             i += delta
@@ -26,8 +26,9 @@ class MainSpW(MeasureWidget, SpectorsCollection):
                 break
             s = gr.count_s(start_index = j, stop_index = i, min_y = min_y)
             r[1].append(full_s / s)
-            r[0].append(0.5 * (data[0][i - 1] + data[0][j]))
+            r[0].append(0.5 * (data[0][i] + data[0][j]))
             j += delta
+        print(len(data[0]))
         return Graph.from_list(r)
 
     def process_graph_data(self, gr):
