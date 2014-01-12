@@ -39,7 +39,8 @@ class SaveDialog(QMainWindow, Ui_SaveDialog):
         self.__queries = {
             'add_visit':    f('select add_visit(?)'),
             'add_graph':    f('select add_graph(?, ?, ?, ?)'),
-            'add_point':    f('insert into Data(diagram_id, point) values (?, POINT(?, ?))')
+            'add_point':    f('insert into Data(diagram_id, point) values (?, POINT(?, ?))'),
+            'have_intact':  f('select have_intact(?)'),
         }
 
     def set_collection(self, collection):
@@ -93,6 +94,18 @@ class SaveDialog(QMainWindow, Ui_SaveDialog):
         q.next()
         visit_id = q.value(0)
         q.finish()
+
+        q = self.__queries['have_intact']
+        q.bindValue(0, visit_id)
+        q.exec_()
+        r = q.value(0)
+        q.finish()
+
+        if r:
+            QMessageBox.critical(self, translate("Error", "Ошибка"),
+                    translate("Intact_already_exists", "Интактная точка уже была сохранена. Изменить интактную " +
+                        "точку можно в истории посещений больного."))
+            return visit_id
 
         index = self.get_indexes()
         gr = self.__collection.get_measure(index['measure']).get_graph(index['graph'])
