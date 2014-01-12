@@ -21,8 +21,8 @@ class Params:
     a1_end = 6750.0
     a2_start = 6950.0
     a2_end = 7050.0
-    normalize_step = 10
-    normalize_offset = 60.0
+    normalize_step = 5.0
+    normalize_offset = 50.0
     normalize_right_border = 8700.0
     diff_window = 5
 
