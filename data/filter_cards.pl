@@ -14,6 +14,8 @@ my @visits;
 
 print $f "use `spectro_viewer`;\nstart transaction;\n\n";
 
+my @diagrams;
+
 while (<$inf>) {
     if (/insert.*names.*\((\d+),'([^']+)','([^']+)','([^']+)','([^']+)'\)/i) {
         $names{$1} = {
@@ -33,18 +35,16 @@ while (<$inf>) {
         };
     } elsif (/insert.*diagrams.*\((\d+),(\d+),(\d+),'([^']+)','([^']+)',(\d+)\)/i) {
         my $rec = {
-            dia_id  => $2,
+            visit_id=> $6,
             dev     => $3 eq '1' ? "blue" : "red",
             point   => $4,
             type    => $4 eq '1' ? "intact" : "other",
         };
-        if ($visits[$6]) {
-            push @{$visits[$6]->{diagrams}}, $rec;
-        } else {
+        $diagrams[$2] = $rec;
+        unless ($visits[$6]) {
             $visits[$6] = {
                 name_id => $1,
                 date    => $5,
-                diagrams=> [$rec],
             };
         }
     } elsif (/insert.*comingrecords.*\((\d+),\d+,(\d+),([^,]+),(\d+),(\d+),'([^']*)','([^']*)','([^']*)'\)/i) {
@@ -58,6 +58,8 @@ while (<$inf>) {
             more        => $7,
             treat       => $8,
         };
+    } elsif (/insert.*D(\d+).*\(([^,]+),([^)]+)\)/i) {
+        push @{$diagrams[$1]->{points}}, [$2, $3];
     }
 }
 
@@ -87,8 +89,6 @@ for my $key (keys %names) {
     }
 }
 
-print Dumper \@visits;
-
 for $i (1 .. @visits - 1) {
     my $cur = $visits[$i] || next;
     my $str = "$cur->{name_id}, str_to_date('$cur->{date}', '%d.%m.%Y')";
@@ -98,6 +98,19 @@ for $i (1 .. @visits - 1) {
         "$i, '$cur->{treat}', $cur->{circle_day}, '$cur->{endo_w}', " .
         "$cur->{scar}, $cur->{fibro}, '$cur->{onco}', '$cur->{more}');\n";
     print $f $str;
+}
+
+$i = 0;
+for (@diagrams) {
+    next unless $_;
+    next unless $_->{visit_id};
+    my $str =  "insert into `Diagrams`(`visit_id`, `device`, `point_name`, `point_type`) values ($_->{visit_id}, " .
+        "'$_->{dev}', '$_->{point}', '$_->{type}');\n";
+    print $f $str;
+    $i++;
+    for (@{$_->{points}}) {
+        print $f "insert into `Data`(`diagram_id`, `point`) values ($i, point($_->[0], $_->[1]));\n";
+    }
 }
 
 print $f "\n\ncommit;";
