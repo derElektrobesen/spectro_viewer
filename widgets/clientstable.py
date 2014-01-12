@@ -19,6 +19,7 @@ class ClientTableModel(QStandardItemModel):
     __columns = [translate('clienttablemodel', 'Фамилия'), translate('clienttablemodel', 'Имя'),
                  translate('clienttablemodel', 'Отчество'), translate('clienttablemodel', 'Номер карты')]
     __query = None
+    __get_all = None
     __pid = os.getpid()
     __rows = {}
 
@@ -30,6 +31,8 @@ class ClientTableModel(QStandardItemModel):
     def load_names(self):
         self.__query = QSqlQuery(DB.con())
         self.__query.prepare("call filter_names(?)")
+        self.__get_all = QSqlQuery(DB.con())
+        self.__get_all.prepare("call select_names()")
         self.__data_q = QSqlQuery(DB.con())
         self.__data_q.prepare("select id, lastname, name, middlename, card_no from filtered_names")
         self.update_pattern()
@@ -58,15 +61,20 @@ class ClientTableModel(QStandardItemModel):
         return None
 
     def update_pattern(self, new_pat = ''):
-        if not self.__query:
+        if not self.__query or not self.__get_all:
             return
 
         self.__old_rows = self.__rows
         self.__rows = {}
 
-        self.__query.bindValue(0, new_pat)
-        self.__query.exec_()
-        self.__query.finish()
+        q = None;
+        if new_pat != '':
+            self.__query.bindValue(0, new_pat)
+            q = self.__query
+        else:
+            q = self.__get_all
+        q.exec_()
+        q.finish()
 
         q = self.__data_q
         q.exec_()
