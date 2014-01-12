@@ -101,6 +101,7 @@ class PatientWindow(QWidget, UI_PatientForm):
         if state:
             gr = Graph()
             gr.read_from_db(vid)
+            gr = gr.smooth()
         for w in self.__widgets:
             if state:
                 w.add_graph(key, gr)

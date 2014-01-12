@@ -14,7 +14,8 @@ class Graph:
             if dev_data:
                 self.compile_dev_data(dev_data)
         if do_smooth:
-            self.__data = self.smooth().get_data()
+            if self.__data:
+                self.__data = self.smooth().get_data()
 
     def compile_dev_data(self, data):
         data = tuple(map(float, data.decode('utf-8').split()))
@@ -54,7 +55,6 @@ class Graph:
     def smooth(self, window = 40):
         if self.__smoothed:
             return self
-        return self     # TODO
 
         if math.fmod(window, 2) == 0:
             window += 1
