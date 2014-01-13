@@ -5,6 +5,7 @@ from db import DB
 from .client_widget import Ui_patient_widget as UI_PatientForm
 from widgets import ColorWidget
 from pr_core import translate, Graph
+from settings import Settings
 
 class PatientWindow(QWidget, UI_PatientForm):
     def __init__(self, parent = None, pid = None):
@@ -15,6 +16,7 @@ class PatientWindow(QWidget, UI_PatientForm):
         self.__graphs = []
         self.__intacts = {}
         self.__info_widgets = {}
+        self.__used_colors = {}
 
         self.__widgets = (
             self.blue_sp_w, self.red_sp_w, self.original_blue_sp_w,
@@ -98,7 +100,14 @@ class PatientWindow(QWidget, UI_PatientForm):
             return
 
         l = self.colors_layout
-        w = ColorWidget()
+        color = None
+        for c in Settings.colors:
+            if c not in self.__used_colors:
+                self.__used_colors[c] = key
+                color = c
+        if not c:
+            c = "#00ff00"
+        w = ColorWidget(color = color)
         self.__info_widgets[gid] = []
         self.__info_widgets[gid].append(w)
         row = l.rowCount()
