@@ -92,6 +92,11 @@ class PatientWindow(QWidget, UI_PatientForm):
         return chb
 
     def add_info_widgets(self, gid):
+        if self.__info_widgets[gid]:
+            for w in self.__info_widgets[gid]:
+                w.show()
+            return
+
         l = self.colors_layout
         w = ColorWidget()
         self.__info_widgets[gid] = []
