@@ -91,8 +91,8 @@ class PatientWindow(QWidget, UI_PatientForm):
         self.points_sca.widget().layout().addWidget(chb)
         return chb
 
-    def add_info_widgets(self, gid):
-        if self.__info_widgets[gid]:
+    def add_info_widgets(self, gid, name, key):
+        if gid in self.__info_widgets:
             for w in self.__info_widgets[gid]:
                 w.show()
             return
@@ -104,11 +104,11 @@ class PatientWindow(QWidget, UI_PatientForm):
         row = l.rowCount()
         l.addWidget(w, row, 0)
 
-        w = QLabel("Hello")
+        w = QLabel(name)
         self.__info_widgets[gid].append(w)
         l.addWidget(w, row, 1)
 
-        w = QLabel("World")
+        w = QLabel("%.3f" % self.original_blue_sp_w.get_ia()[key])
         self.__info_widgets[gid].append(w)
         l.addWidget(w, row, 2)
 
@@ -121,11 +121,14 @@ class PatientWindow(QWidget, UI_PatientForm):
         chb = self.sender()
         key = None
         i_id = None
+        gid = None
+        name = None
         for point in self.__info['points']:
             if point['checkbox'] == chb:
                 key = point['key']
                 gid = point['graph_id']
                 i_id = point['intact_id']
+                name = point['point']
                 break
         gr = None
         if i_id not in self.__intacts:
@@ -136,14 +139,15 @@ class PatientWindow(QWidget, UI_PatientForm):
             gr.read_from_db(gid)
             #gr = gr.smooth()
 
-        if state:
-            self.add_info_widgets(gid)
-        else:
-            for i in range(4):
-                self.__info_widgets[gid][i].hide()
         for w in self.__widgets:
             if state:
                 w.add_graph(key, gr, self.__intacts[i_id], color = "#ff00ff")
             else:
                 w.remove_graph(key)
             w.render()
+
+        if state:
+            self.add_info_widgets(gid, name, key)
+        else:
+            for i in range(4):
+                self.__info_widgets[gid][i].hide()

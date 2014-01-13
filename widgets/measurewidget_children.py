@@ -21,24 +21,6 @@ class RedCollection(SpectorsCollection):
 class BlueSpW(MainSpW, BlueCollection):
     def __init__(self, parent = None):
         MainSpW.__init__(self, parent)
-        self.__ia = []
-
-    def __calculate_graph(self, gr):
-        return gr
-
-    def get_ia(self):
-        graphs = self.graphs()
-        def f(gr):
-            return gr.count_s(Params.a1_start, Params.a1_end) / \
-                   gr.count_s(Params.a2_start, Params.a2_end)
-        for key, val in graphs.items:
-            if key not in self.__ia:
-                self.__ia[key] = f(val['graph'])
-        return self.__ia
-
-class RedSpW(MainSpW, RedCollection):
-    def __init__(self, parent = None):
-        MainSpW.__init__(self, parent)
 
     def __calculate_graph(self, gr):
         return gr
@@ -46,6 +28,27 @@ class RedSpW(MainSpW, RedCollection):
 class OrigBlueSpW(OrigSpW, BlueCollection):
     def __init__(self, parent = None):
         OrigSpW.__init__(self, parent)
+        self.__ia = {}
+
+    def __calculate_graph(self, gr):
+        return gr
+
+    def get_ia(self):
+        graphs = self.graphs()
+        def f(gr, min_y):
+            a = gr.count_s(Params.a1_start, Params.a1_end, min_y = min_y)
+            b = gr.count_s(Params.a2_start, Params.a2_end, min_y = min_y)
+            return a / b
+
+        for key, val in graphs.items():
+            if key not in self.__ia:
+                m = min(val['graph'].get_data()[1])
+                self.__ia[key] = f(val['graph'], m)
+        return self.__ia
+
+class RedSpW(MainSpW, RedCollection):
+    def __init__(self, parent = None):
+        MainSpW.__init__(self, parent)
 
     def __calculate_graph(self, gr):
         return gr

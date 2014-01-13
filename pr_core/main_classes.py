@@ -95,7 +95,7 @@ class Graph:
         if not min_y:
             min_y = min(self.__data[1])
         if start:
-            start_index = self.seach_index(start)
+            start_index = self.search_index(start)
         if stop:
             stop_index = self.search_index(stop)
         r = 0
