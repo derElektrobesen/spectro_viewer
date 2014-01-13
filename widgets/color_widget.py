@@ -1,5 +1,6 @@
 from PyQt4.QtGui import QWidget, QPainter, QBrush, QPen, QColor, QColorDialog
 from PyQt4.QtCore import Qt, QRect
+from settings import Settings
 
 class ColorWidget(QWidget):
     def __init__(self, parent = None, color = "#000000"):
@@ -28,5 +29,9 @@ class ColorWidget(QWidget):
         c = QColorDialog.getColor(self.__color)
         self.__color = c
         self.repaint()
+        name = c.name()
         if self.__on_color_change:
-            self.__on_color_change(c.name())
+            self.__on_color_change(name)
+        if name not in Settings.colors:
+            Settings.colors.append(name)
+            Settings.store()

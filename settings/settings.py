@@ -31,7 +31,7 @@ __code = """
 class Settings:
     @staticmethod
     def store():
-        dump(SettingsList.settings, open(SettingsList.__fname, "wb"))
+        dump(SettingsList.settings, open(SettingsList.fname, "wb")) # TODO
 
 """
 

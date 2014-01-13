@@ -5,3 +5,4 @@ forms/[!_]*.py
 */__pycache__/*
 db/sql/*
 data/*
+settings/settings.cfg

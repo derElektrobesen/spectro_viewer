@@ -95,6 +95,7 @@ class PatientWindow(QWidget, UI_PatientForm):
 
     def get_color(self, key):
         color = None
+        print(Settings.colors)
         if key not in self.__used_colors.values():
             for c in Settings.colors:
                 if c not in self.__used_colors:
@@ -116,6 +117,7 @@ class PatientWindow(QWidget, UI_PatientForm):
         def f(color):
             for w in self.__widgets:
                 w.set_color(key, color)
+            self.__used_colors[self.get_color(key)] = color
 
         l = self.colors_layout
         w = ColorWidget(color = self.get_color(key))
