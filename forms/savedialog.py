@@ -47,6 +47,9 @@ class SaveDialog(QMainWindow, Ui_SaveDialog):
         self.__collection = collection
 
     def set_measure_box_value(self):
+        index = None
+        if self.measures_box.count():
+            index = self.get_indexes()
         self.measures_box.clear()
 
         if not self.__collection:
@@ -55,14 +58,22 @@ class SaveDialog(QMainWindow, Ui_SaveDialog):
         m_format_str = translate("Measure", "Измерение") + ": %d"
         format_str = m_format_str + ", " + \
                 translate("Spectr", "Спектр") + ": %d"
+        m_i = None
+        cur_i = 0
         for i, measure in enumerate(self.__collection):
+            if index and index['measure'] == i:
+                m_i = cur_i
             if measure.count() == 1:
                 self.measures_box.addItem(m_format_str % (i + 1), { 'measure': i, 'graph': 0 })
+                cur_i += 1
             else:
                 for j in range(measure.count()):
                     self.measures_box.addItem(format_str % (i + 1, j + 1), { 'measure': i, 'graph': j })
+                    cur_i += 1
 
-        self.on_index_changed(0)
+        if m_i:
+            self.measures_box.setCurrentIndex(m_i)
+        self.on_index_changed(m_i or 0)
 
     def set_progress(self, val, pr_range = (0,100)):
         self.progressBar.setMinimum(pr_range[0])
@@ -82,7 +93,7 @@ class SaveDialog(QMainWindow, Ui_SaveDialog):
         q.exec_()
         r = []
         while (q.next()):
-            t = q.value(0) + " " + q.value(1) + " " + q.value(2)
+            t = q.value(1) + " " + q.value(1) + " " + q.value(2)
             r.append(t)
             self.__names[t.lower()] = {'card': q.value(3), 'id': q.value(4),}
         return r
@@ -144,7 +155,7 @@ class SaveDialog(QMainWindow, Ui_SaveDialog):
         if self.__visit_id:
             q = self.__queries['have_intact']
             q.bindValue(0, self.__visit_id)
-            q.exec()
+            q.exec_()
             r = q.value(0)
             q.finish()
             if not r:

@@ -74,7 +74,7 @@
        <widget class="QLineEdit" name="name_edt"/>
       </item>
       <item row="2" column="1">
-       <widget class="QLineEdit" name="lastname_edt"/>
+       <widget class="QLineEdit" name="middlename_edt"/>
       </item>
       <item row="1" column="0">
        <widget class="QLabel" name="label_3">
@@ -87,7 +87,7 @@
        </widget>
       </item>
       <item row="1" column="1">
-       <widget class="QLineEdit" name="surname_edt"/>
+       <widget class="QLineEdit" name="lastname_edt"/>
       </item>
       <item row="1" column="3">
        <widget class="QLineEdit" name="card_no_edt"/>
@@ -167,8 +167,8 @@
  </widget>
  <tabstops>
   <tabstop>name_edt</tabstop>
-  <tabstop>surname_edt</tabstop>
   <tabstop>lastname_edt</tabstop>
+  <tabstop>middlename_edt</tabstop>
   <tabstop>birth_date_edt</tabstop>
   <tabstop>card_no_edt</tabstop>
   <tabstop>eco_count_edt</tabstop>
