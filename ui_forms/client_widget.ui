@@ -328,7 +328,10 @@
              <number>2</number>
             </property>
             <item>
-             <layout class="QGridLayout" name="gridLayout_2">
+             <layout class="QGridLayout" name="colors_layout">
+              <item row="0" column="0">
+               <widget class="QWidget" name="widget_2" native="true"/>
+              </item>
               <item row="0" column="1">
                <widget class="QWidget" name="widget" native="true"/>
               </item>
@@ -339,28 +342,12 @@
                 </property>
                </widget>
               </item>
-              <item row="1" column="2">
-               <spacer name="verticalSpacer">
-                <property name="orientation">
-                 <enum>Qt::Vertical</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>20</width>
-                  <height>40</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
               <item row="0" column="3">
                <widget class="QLabel" name="label_10">
                 <property name="text">
                  <string>ФЛ</string>
                 </property>
                </widget>
-              </item>
-              <item row="0" column="0">
-               <widget class="QWidget" name="widget_2" native="true"/>
               </item>
              </layout>
             </item>
@@ -379,7 +366,7 @@
          <item>
           <widget class="QTabWidget" name="tabWidget_2">
            <property name="currentIndex">
-            <number>0</number>
+            <number>2</number>
            </property>
            <widget class="QWidget" name="tab_3">
             <attribute name="title">

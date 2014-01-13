@@ -30,14 +30,21 @@ class SpectorsCollection:
     def __init__(self):
         self.__graphs = {}
 
-    def add_graph(self, key, graph, intact_gr):
+    def add_graph(self, key, graph, intact_gr, color = None):
         self.__intact_gr = intact_gr
 
         graph = self.process_graph_bounds(graph)
         graph = self.process_graph_data(graph)
 
         d = graph.get_data()
-        self.__graphs[key] = { 'graph': graph, }
+        self.__graphs[key] = { 'graph': graph, 'color': color }
+
+    def set_color(self, key, color):
+        self.__graphs[key]['color'] = color
+        self.render()
+
+    def render(self):
+        pass
 
     def remove_graph(self, key):
         del self.__graphs[key]
@@ -86,9 +93,7 @@ class MeasureWidget(FigureCanvas, SpectorsCollection):
                 xmin = data[0][0]
             if data[0][-1] > xmax:
                 xmax = data[0][-1]
-            line = plt.plot(*data)
-            if 'color' in gr:
-                plt.setp(line, color = gr['color'])
+            line = plt.plot(color = gr['color'], *data)
         plt.set_xlim(xmin, xmax)
         self.__fig.subplots_adjust(left=0.07, right=0.95, top=0.9, bottom=0.1)
         self.draw()

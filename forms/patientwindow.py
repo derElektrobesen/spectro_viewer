@@ -3,6 +3,7 @@ from PyQt4.QtCore import *
 from PyQt4.QtSql import QSqlQuery
 from db import DB
 from .client_widget import Ui_patient_widget as UI_PatientForm
+from widgets import ColorWidget
 from pr_core import translate, Graph
 
 class PatientWindow(QWidget, UI_PatientForm):
@@ -13,6 +14,7 @@ class PatientWindow(QWidget, UI_PatientForm):
         self.__info = {}
         self.__graphs = []
         self.__intacts = {}
+        self.__info_widgets = {}
 
         self.__widgets = (
             self.blue_sp_w, self.red_sp_w, self.original_blue_sp_w,
@@ -89,6 +91,26 @@ class PatientWindow(QWidget, UI_PatientForm):
         self.points_sca.widget().layout().addWidget(chb)
         return chb
 
+    def add_info_widgets(self, gid):
+        l = self.colors_layout
+        w = ColorWidget()
+        self.__info_widgets[gid] = []
+        self.__info_widgets[gid].append(w)
+        row = l.rowCount()
+        l.addWidget(w, row, 0)
+
+        w = QLabel("Hello")
+        self.__info_widgets[gid].append(w)
+        l.addWidget(w, row, 1)
+
+        w = QLabel("World")
+        self.__info_widgets[gid].append(w)
+        l.addWidget(w, row, 2)
+
+        w = QLabel("Again")
+        self.__info_widgets[gid].append(w)
+        l.addWidget(w, row, 3)
+
     @pyqtSlot(int)
     def on_point_checked(self, state):
         chb = self.sender()
@@ -108,9 +130,15 @@ class PatientWindow(QWidget, UI_PatientForm):
             gr = Graph()
             gr.read_from_db(gid)
             #gr = gr.smooth()
+
+        if state:
+            self.add_info_widgets(gid)
+        else:
+            for i in range(4):
+                self.__info_widgets[gid][i].hide()
         for w in self.__widgets:
             if state:
-                w.add_graph(key, gr, self.__intacts[i_id])
+                w.add_graph(key, gr, self.__intacts[i_id], color = "#ff00ff")
             else:
                 w.remove_graph(key)
             w.render()
