@@ -19,7 +19,7 @@ class AddPatientWindow(QMainWindow, Ui_add_patient_form):
             return q
 
         self.__queries = {
-                'add_patient':  f('call add_patient(:lastname, :name, :surname, :card_no, ' +
+                'add_patient':  f('call add_patient(:lastname, :name, :middlename, :card_no, ' +
                     ':birthdate, :eco, :diagnosis, :treatment)'),
                 'has_card':     f('select has_card(?)'),
         }
@@ -33,12 +33,12 @@ class AddPatientWindow(QMainWindow, Ui_add_patient_form):
         this = self.__dict__
         f_names = {
             'name_edt': translate("Name", "Имя"),
-            'surname_edt': translate("Surname", "Фамилия"),
-            'lastname_edt': translate("Lastname", "Отчество"),
+            'lastname_edt': translate("Surname", "Фамилия"),
+            'middlename_edt': translate("Lastname", "Отчество"),
             'card_no_edt': translate("Card_no", "Номер карты"),
         }
         results = {}
-        for key in ('name_edt', 'surname_edt', 'lastname_edt', 'card_no_edt'):
+        for key in ('name_edt', 'lastname_edt', 'middlename_edt', 'card_no_edt'):
             val = this[key].text().strip()
             if len(val) == 0:
                 return self.__on_empty_field_found(f_names[key])

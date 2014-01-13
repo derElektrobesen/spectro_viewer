@@ -30,7 +30,7 @@ class SpectorsCollection:
     def __init__(self):
         self.__graphs = {}
 
-    def add_graph(self, key, graph, intact_gr, color = None):
+    def add_graph(self, key, graph, intact_gr, color = "#2e8b57"):
         self.__intact_gr = intact_gr
 
         graph = self.process_graph_bounds(graph)
@@ -54,7 +54,7 @@ class SpectorsCollection:
 
     def set_graph(self, key, graph):
         self.clear()
-        self.add_graph(key, graph)
+        self.add_graph(key, graph, None)
 
     def get_graph(self, key):
         return self.__graphs[key]['graph'] if key in self.__graphs else None
