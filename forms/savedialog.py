@@ -106,13 +106,13 @@ class SaveDialog(QMainWindow, Ui_SaveDialog):
         visit_id = q.value(0)
         q.finish()
 
-        q = self.__queries['have_intact']
-        q.bindValue(0, visit_id)
-        q.exec_()
-        r = q.value(0)
-        q.finish()
+        #q = self.__queries['have_intact']
+        #q.bindValue(0, visit_id)
+        #q.exec_()
+        #r = q.value(0)
+        #q.finish()
 
-        if r:
+        if 0:
             QMessageBox.critical(self, translate("Error", "Ошибка"),
                     translate("Intact_already_exists", "Интактная точка уже была сохранена.")) #Изменить интактную " +
                        # "точку можно в истории посещений больного."))
@@ -153,12 +153,12 @@ class SaveDialog(QMainWindow, Ui_SaveDialog):
 
     def save_extra_info(self):
         if self.__visit_id:
-            q = self.__queries['have_intact']
-            q.bindValue(0, self.__visit_id)
-            q.exec_()
-            r = q.value(0)
-            q.finish()
-            if not r:
+            #q = self.__queries['have_intact']
+            #q.bindValue(0, self.__visit_id)
+            #q.exec_()
+            #r = q.value(0)
+            #q.finish()
+            if 0:
                 QMessageBox.critical(self, translate("error", "Ошибка"),
                         translate("intact_not_found", "Интактная точка не была сохранена. Для сохранения интактной точки " +
                             "используйте кнопку 'Сохранить как интакт'"))
