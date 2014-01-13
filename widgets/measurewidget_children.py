@@ -29,6 +29,7 @@ class OrigBlueSpW(OrigSpW, BlueCollection):
     def __init__(self, parent = None):
         OrigSpW.__init__(self, parent)
         self.__ia = {}
+        self.__s = {}
 
     def __calculate_graph(self, gr):
         return gr
@@ -45,6 +46,15 @@ class OrigBlueSpW(OrigSpW, BlueCollection):
                 m = min(val['graph'].get_data()[1])
                 self.__ia[key] = f(val['graph'], m)
         return self.__ia
+
+    def get_s(self):
+        graphs = self.graphs()
+        def f(gr):
+            return gr.count_s()
+        for key, val in graphs.items():
+            if key not in self.__s:
+                self.__s[key] = f(val['graph'])
+        return self.__s
 
 class RedSpW(MainSpW, RedCollection):
     def __init__(self, parent = None):

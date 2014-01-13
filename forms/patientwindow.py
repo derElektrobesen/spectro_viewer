@@ -112,7 +112,7 @@ class PatientWindow(QWidget, UI_PatientForm):
         self.__info_widgets[gid].append(w)
         l.addWidget(w, row, 2)
 
-        w = QLabel("Again")
+        w = QLabel("%.3e" % self.original_blue_sp_w.get_s()[key])
         self.__info_widgets[gid].append(w)
         l.addWidget(w, row, 3)
 
