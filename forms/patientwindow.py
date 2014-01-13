@@ -76,6 +76,8 @@ class PatientWindow(QWidget, UI_PatientForm):
 
         self.__info['points'] = tuple(points)
 
+        points[0]['checkbox'].setChecked(True)
+
     def get_title(self):
         return self.__info['lastname'] + " " + self.__info['name'][0] + ". " + \
             self.__info['middlename'][0] + "."
