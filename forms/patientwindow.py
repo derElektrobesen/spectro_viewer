@@ -99,14 +99,21 @@ class PatientWindow(QWidget, UI_PatientForm):
                 w.show()
             return
 
-        l = self.colors_layout
         color = None
-        for c in Settings.colors:
-            if c not in self.__used_colors:
-                self.__used_colors[c] = key
-                color = c
-        if not c:
-            c = "#00ff00"
+        if key not in self.__used_colors.values():
+            for c in Settings.colors:
+                if c not in self.__used_colors:
+                    self.__used_colors[c] = key
+                    color = c
+                    break
+        else:
+            for c in settings.colors:
+                if self.__used_colors[c] == key:
+                    color = c
+        if not color:
+            color = "#00ff00"
+
+        l = self.colors_layout
         w = ColorWidget(color = color)
         self.__info_widgets[gid] = []
         self.__info_widgets[gid].append(w)
