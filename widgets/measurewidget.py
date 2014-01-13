@@ -80,8 +80,10 @@ class MeasureWidget(FigureCanvas, SpectorsCollection):
         self.setParent(parent)
 
     def set_color(self, key, color):
+        g = self.graphs()
         if key in self.graphs():
-            self.__graph[key]['color'] = color
+            g[key]['color'] = color
+        self.render()
 
     def render(self):
         plt = self.__axes

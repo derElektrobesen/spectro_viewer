@@ -93,12 +93,7 @@ class PatientWindow(QWidget, UI_PatientForm):
         self.points_sca.widget().layout().addWidget(chb)
         return chb
 
-    def add_info_widgets(self, gid, name, key):
-        if gid in self.__info_widgets:
-            for w in self.__info_widgets[gid]:
-                w.show()
-            return
-
+    def get_color(self, key):
         color = None
         if key not in self.__used_colors.values():
             for c in Settings.colors:
@@ -107,14 +102,24 @@ class PatientWindow(QWidget, UI_PatientForm):
                     color = c
                     break
         else:
-            for c in settings.colors:
-                if self.__used_colors[c] == key:
+            for c in Settings.colors:
+                if c in self.__used_colors and self.__used_colors[c] == key:
                     color = c
-        if not color:
-            color = "#00ff00"
+        return color or "#00ff00"
+
+    def add_info_widgets(self, gid, name, key):
+        if gid in self.__info_widgets:
+            for w in self.__info_widgets[gid]:
+                w.show()
+            return
+        
+        def f(color):
+            for w in self.__widgets:
+                w.set_color(key, color)
 
         l = self.colors_layout
-        w = ColorWidget(color = color)
+        w = ColorWidget(color = self.get_color(key))
+        w.on_color_change(f)
         self.__info_widgets[gid] = []
         self.__info_widgets[gid].append(w)
         row = l.rowCount()
@@ -157,7 +162,7 @@ class PatientWindow(QWidget, UI_PatientForm):
 
         for w in self.__widgets:
             if state:
-                w.add_graph(key, gr, self.__intacts[i_id], color = "#ff00ff")
+                w.add_graph(key, gr, self.__intacts[i_id], color = self.get_color(key))
             else:
                 w.remove_graph(key)
             w.render()
