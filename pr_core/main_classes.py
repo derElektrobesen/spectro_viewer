@@ -43,13 +43,35 @@ class Graph:
 
     def search_index(self, xval):
         i = 0
-        if xval <= self.__data[0][0]:
+        if xval < self.__data[0][0] or xval > self.__data[0][-1]:
+            return None
+        if xval == self.__data[0][0]:
             return 0
-        if xval >= self.__data[0][-1]:
+        if xval == self.__data[0][-1]:
             return len(self.__data) - 1
         while self.__data[0][i] <= xval:
             i += 1
         return i
+
+    def search_value(self, xval):
+        index = self.search_index(xval)
+        if index == None:
+            return None
+        rx, ry = self.__data[0][index], self.__data[1][index]
+        """
+        if rx != xval:
+            dx = abs(self.__data[0][index + 1] - rx)
+            dy = abs(self.__data[1][index + 1] - ry)
+            dy *= abs(xval - rx) / dx
+            rx = xval
+            print(dy)
+            ry += dy
+        """
+        return (rx, ry)
+
+    # Tuple returns
+    def __getitem__(self, xval):
+        return self.search_value(xval)
 
     def is_smoothed(self):
         return self.__smoothed
@@ -96,8 +118,12 @@ class Graph:
             min_y = min(self.__data[1])
         if start:
             start_index = self.search_index(start)
+            if start_index == None:
+                start_index = 0
         if stop:
             stop_index = self.search_index(stop)
+            if stop_index == None:
+                stop_index = len(self.__data[1]) - 1
         r = 0
         for i in range(start_index, stop_index):
             r += self.__data[1][i] - min_y

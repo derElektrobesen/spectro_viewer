@@ -1,5 +1,6 @@
 import numpy as np
 from PyQt4.QtGui import *
+from PyQt4.QtCore import QPointF
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.legend_handler import HandlerLine2D
@@ -76,8 +77,12 @@ class MeasureWidget(FigureCanvas, SpectorsCollection):
         self.__fig = Figure()
         FigureCanvas.__init__(self, self.__fig)
         SpectorsCollection.__init__(self)
-        self.__axes = self.__fig.add_subplot(111)
+        self.__coords = QPointF(0.0, 0.0)
         self.setParent(parent)
+
+        self.__axes = self.__fig.add_subplot(111)
+        self.__axes_coords_ref = self.__axes.transAxes
+        self.__data_coords_ref = self.__axes.transData
 
     def set_color(self, key, color):
         g = self.graphs()
@@ -105,3 +110,45 @@ class MeasureWidget(FigureCanvas, SpectorsCollection):
             plt.set_xlim(xmin, xmax)
         self.__fig.subplots_adjust(left=0.07, right=0.95, top=0.9, bottom=0.1)
         self.draw()
+
+    def mouseMoveEvent(self, e):
+        FigureCanvas.mouseMoveEvent(self, e)
+        self.__coords = e.posF()
+        self.repaint()
+
+    def paintEvent(self, e):
+        FigureCanvas.paintEvent(self, e)
+
+        if not len(self.graphs()):
+            return
+
+        painter = QPainter(self)
+
+        cur_pnt = [self.__coords.x(), self.height() - self.__coords.y()]
+        points = [];
+        cur_axes_coords = self.__axes_coords_ref.inverted().transform(cur_pnt)
+
+        if 1 >= cur_axes_coords[0] >= 0:
+            axes_coords = (
+                    self.__axes_coords_ref.transform((0, 0)),
+                    self.__axes_coords_ref.transform((0, 1)))
+
+            painter.setPen(QColor("#dedede"))
+            painter.drawLine(self.__coords.x(), axes_coords[0][1] + 1,
+                    self.__coords.x(), axes_coords[1][1])
+
+            painter.setBrush(QColor("#ffffff"))
+
+            cursor_position = self.__data_coords_ref.inverted().transform(cur_pnt)
+            for gr in self.graphs().values():
+                data = gr['graph'].get_data()
+                if len(data) == 0 or len(data[0]) == 0:
+                        continue
+
+                point = gr['graph'][cursor_position[0]]
+                if point != None:
+                    point = self.__data_coords_ref.transform(point)
+                    painter.setPen(QColor(gr['color']))
+                    painter.drawEllipse(point[0] - 2, self.height() - point[1] - 2, 4, 4)
+
+                    points.append(point)

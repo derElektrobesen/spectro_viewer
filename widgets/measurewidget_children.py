@@ -14,6 +14,12 @@ class RedCollection(SpectorsCollection):
         i = 0
         i_s = gr.search_index(Params.red_int_start)
         i_e = gr.search_index(Params.red_int_end)
+
+        if i_s == None:
+            i_s = 0
+        if i_e == None:
+            i_e = len(data[0]) - 1
+
         new_data[0] = data[0][i_s:i_e + 1]
         new_data[1] = data[1][i_s:i_e + 1]
         return Graph.from_list(new_data)
