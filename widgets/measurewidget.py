@@ -89,13 +89,19 @@ class MeasureWidget(FigureCanvas, SpectorsCollection):
         plt = self.__axes
         plt.cla()
         xmin, xmax = 99999999, -1
+        count = 0
         for gr in self.graphs().values():
             data = gr['graph'].get_data()
+            if len(data) == 0 or len(data[0]) == 0:
+                continue
+            count += 1
+
             if data[0][0] < xmin:
                 xmin = data[0][0]
             if data[0][-1] > xmax:
                 xmax = data[0][-1]
             line = plt.plot(color = gr['color'], *data)
-        plt.set_xlim(xmin, xmax)
+        if (count):
+            plt.set_xlim(xmin, xmax)
         self.__fig.subplots_adjust(left=0.07, right=0.95, top=0.9, bottom=0.1)
         self.draw()
