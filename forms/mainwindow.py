@@ -51,4 +51,4 @@ class MainWindow(QMainWindow, UI_MainWindow):
 
     @pyqtSlot()
     def on_export_db_triggered(self):
-        return DB.export('hello')
+        return DB.export('/tmp/stuff2', 'test_passw', [1])

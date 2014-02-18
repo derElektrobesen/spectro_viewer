@@ -1,9 +1,14 @@
 from PyQt4.QtSql import *
 from PyQt4.QtCore import *
 from PyQt4.QtSql import QSqlQuery
+import pickle
+from .crypto import AESCipher
 
 class SqlException(Exception):
     __msg = None
+
+    ErrcodeNoData = 1
+
     def __init__(self, message = None, errcode = -1):
         if message:
             self.__msg = message
@@ -36,7 +41,7 @@ class DB:
     # Errors:
     #   -1: No names found
     @staticmethod
-    def export(fname, without_names = []):
+    def export(fname, passw, without_names = []):
         to_export = {}
         names = []
         without_names = ', '.join(map(lambda e: str(e), without_names)) if len(without_names) else '-1'
@@ -56,15 +61,39 @@ class DB:
         q.finish()
 
         if not len(names):
-            raise SqlException(errcode = 1)
+            raise SqlException(errcode = SqlException.ErrcodeNoData)
         names = ', '.join(names)
 
         to_export = DB.__export_main_info(to_export, names)
         to_export = DB.__export_cards(to_export, names)
         to_export = DB.__export_roles(to_export, names)
-        diagrams = DB.__export_visits(to_export, names)
+        diagrams  = DB.__export_visits(to_export, names)
+        to_export = { 'info': to_export, }
+        to_export = DB.__export_diagrams(to_export, diagrams)
 
-        print(to_export)
+        DB.__save_data(fname, passw, to_export)
+
+    @staticmethod
+    def __save_data(fname, passw, to_export):
+        data = pickle.dumps(to_export, pickle.HIGHEST_PROTOCOL)
+        c = AESCipher(passw)
+        open(fname, 'wb').write(c.encrypt(data))
+
+    @staticmethod
+    def __export_diagrams(to_export, ids):
+        q = DB.query()
+        q.prepare("select diagram_id, x(point), y(point) from Data where diagram_id in (%s) order by id" % ids)
+        q.exec_()
+
+        d = to_export['diagrams'] = {}
+
+        while q.next():
+            if q.value(0) not in d:
+                d[q.value(0)] = []
+            d[q.value(0)].append((q.value(1), q.value(2)))
+
+        q.finish()
+        return to_export
 
     @staticmethod
     def __export_visits(to_export, ids):

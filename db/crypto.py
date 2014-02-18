@@ -1,6 +1,5 @@
 from Crypto import Random
 from Crypto.Cipher import AES
-from struct import pack, unpack
 import base64
 import hashlib
 
