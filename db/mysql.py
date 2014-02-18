@@ -59,19 +59,77 @@ class DB:
             raise SqlException(errcode = 1)
         names = ', '.join(names)
 
-        funcs = """
-            export_main_info
-            export_roles
-            export_cards
-        """
-
-        for func in funcs.split():
-            exec('to_export = DB.%s(to_export, names)' % func)
+        to_export = DB.__export_main_info(to_export, names)
+        to_export = DB.__export_cards(to_export, names)
+        to_export = DB.__export_roles(to_export, names)
+        diagrams = DB.__export_visits(to_export, names)
 
         print(to_export)
 
     @staticmethod
-    def export_cards(to_export, ids):
+    def __export_visits(to_export, ids):
+        diagrams = []
+        q = DB.query()
+        q.prepare("""
+            select v.name_id,
+                   v.id,
+                   date_format(v.date, '%%d.%%m.%%Y'),
+                   t.treatment,
+                   t.cycle_day,
+                   t.endometrium,
+                   t.scar,
+                   t.fibrosis,
+                   t.oncology,
+                   t.other_info,
+                   d.device,
+                   d.point_name,
+                   d.point_type,
+                   d.id,
+                   m.morfo,
+                   m.meta,
+                   m.funct
+            from Visits v
+            left join Treatment t on t.visit_id = v.id
+            left join Diagrams d on d.visit_id = v.id
+            left join Marks m on m.diagram_id = d.id
+            where v.name_id in (%s)
+        """ % ids)
+
+        nu = lambda q, i: '' if type(q.value(i)) is QPyNullVariant else q.value(i)
+
+        q.exec_()
+        while q.next():
+            ref = to_export[q.value(0)]
+            if 'visits' not in ref:
+                ref['visits'] = {}
+            if q.value(1) not in ref['visits']:
+                ref['visits'][q.value(1)] = {
+                    'date':         nu(q, 2),
+                    'treatment':    nu(q, 3),
+                    'cycle_day':    nu(q, 4),
+                    'endometrium':  nu(q, 5),
+                    'scar':         nu(q, 6),
+                    'fibrosis':     nu(q, 7),
+                    'oncology':     nu(q, 8),
+                    'other_info':   nu(q, 9),
+                    'diagrams':     [],
+                }
+            ref['visits'][q.value(1)]['diagrams'].append({
+                    'device':       nu(q, 10),
+                    'point_name':   nu(q, 11),
+                    'point_type':   nu(q, 12),
+                    'id':           nu(q, 13),
+                    'morfo':        nu(q, 14),
+                    'meta':         nu(q, 15),
+                    'funct':        nu(q, 16),
+            })
+            diagrams.append(q.value(13))
+        q.finish()
+
+        return ', '.join(map(lambda e: str(e), diagrams))
+
+    @staticmethod
+    def __export_cards(to_export, ids):
         q = DB.query()
         q.prepare("select name_id, card_no from Cards where name_id in (%s)" % ids)
         q.exec_()
@@ -81,7 +139,7 @@ class DB:
         return to_export
 
     @staticmethod
-    def export_roles(to_export, ids):
+    def __export_roles(to_export, ids):
         q = DB.query()
         q.prepare("select name_id, role from Roles where name_id in (%s)" % ids)
         q.exec_()
@@ -93,7 +151,7 @@ class DB:
         return to_export
 
     @staticmethod
-    def export_main_info(to_export, ids):
+    def __export_main_info(to_export, ids):
         q = DB.query()
         q.prepare("select name_id, eco_count, diagnosis, previous_treatment from MainInfo where name_id in (%s)" % ids)
         q.exec_()
