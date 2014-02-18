@@ -64,6 +64,10 @@
      <string>Инструменты</string>
     </property>
     <addaction name="act_add_client"/>
+    <addaction name="separator"/>
+    <addaction name="import_db"/>
+    <addaction name="export_db"/>
+    <addaction name="separator"/>
     <addaction name="act_settings"/>
    </widget>
    <widget class="QMenu" name="menu_2">
@@ -101,6 +105,16 @@
   <action name="act_about">
    <property name="text">
     <string>Разработчики</string>
+   </property>
+  </action>
+  <action name="import_db">
+   <property name="text">
+    <string>Импорт базы данных</string>
+   </property>
+  </action>
+  <action name="export_db">
+   <property name="text">
+    <string>Экспорт базы данных</string>
    </property>
   </action>
  </widget>

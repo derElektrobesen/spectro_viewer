@@ -4,6 +4,8 @@ from .main_form import Ui_MainWindow as UI_MainWindow
 from .addpatientwindow import AddPatientWindow
 from .patientwindow import PatientWindow
 
+from db import DB
+
 class MainWindow(QMainWindow, UI_MainWindow):
     def __init__(self, parent = None):
         QMainWindow.__init__(self, parent)
@@ -42,3 +44,11 @@ class MainWindow(QMainWindow, UI_MainWindow):
         if k:
             del self.__tabs[k]
         self.tabWidget.removeTab(tab)
+
+    @pyqtSlot()
+    def on_import_db_triggered(self):
+        pass
+
+    @pyqtSlot()
+    def on_export_db_triggered(self):
+        return DB.export('hello')
