@@ -6,7 +6,7 @@ import os.path
 from db import DB, SqlException
 from pr_core import translate
 
-class ProgressDialog(QMainWindow, UI_Dialog):
+class ProgressDialog(QDialog, UI_Dialog):
     ModeExport = 0
     ModeImport = 1
 

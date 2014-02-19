@@ -3,6 +3,7 @@ from PyQt4.QtCore import *
 from PyQt4.QtSql import QSqlQuery
 from db import DB
 from .client_widget import Ui_patient_widget as UI_PatientForm
+from .resultsdialog import ResultsDialog
 from widgets import ColorWidget
 from pr_core import translate, Graph
 from settings import Settings
@@ -176,3 +177,36 @@ class PatientWindow(QWidget, UI_PatientForm):
         else:
             for i in range(4):
                 self.__info_widgets[gid][i].hide()
+
+    def save_results(self, data):
+        q = DB.query()
+        q.prepare("select id from Visits where name_id = ? and DATE(date) = CURDATE()")
+        q.bindValue(0, self.__pid)
+        q.exec_()
+        v = None
+        if q.next():
+            v = q.value(0)
+        else:
+            QMessageBox.information(self, translate('Error', 'Ошибка'),
+                    translate('No visits found', 'За сегодня ни одного посещения не найдено'))
+            q.finish()
+            return
+        q.finish()
+
+        q.prepare("insert into Marks(visit_id, morfo, meta, funct) values (?, ?, ?, ?)")
+        q.bindValue(0, v)
+        q.bindValue(1, data['morfo'])
+        q.bindValue(2, data['meta'])
+        q.bindValue(3, data['funct'])
+        if not q.exec_():
+            q.prepare("update Marks set morfo = ?, meta = ?, funct = ? where visit_id = ?")
+            q.bindValue(0, data['morfo'])
+            q.bindValue(1, data['meta'])
+            q.bindValue(2, data['funct'])
+            q.bindValue(3, v)
+            q.exec_()
+
+    @pyqtSlot()
+    def on_results_btn_clicked(self):
+        d = ResultsDialog(self, self.save_results)
+        d.show()
