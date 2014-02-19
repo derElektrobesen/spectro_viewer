@@ -76,7 +76,7 @@ class DB:
     @staticmethod
     def __save_data(fname, passw, to_export):
         data = pickle.dumps(to_export, pickle.HIGHEST_PROTOCOL)
-        c = AESCipher(passw)
+        c = AESCipher(passw, b64encode = False)
         open(fname, 'wb').write(c.encrypt(data))
 
     @staticmethod
