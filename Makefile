@@ -6,6 +6,7 @@ FORMS = \
 	measure_widget \
 	login_form \
 	save_dialog \
+	progress_dialog \
 	extra_info_window
 
 FORMS_DIR = ui_forms
@@ -24,6 +25,9 @@ $(DEST_DIR)/main_form.py: $(DEST_DIR)/main_form.bak
 
 $(DEST_DIR)/add_patient_form.py: $(DEST_DIR)/add_patient_form.bak
 	cp $^ $(DEST_DIR)/add_patient_form.py
+
+$(DEST_DIR)/progress_dialog.py: $(DEST_DIR)/progress_dialog.bak
+	cp $^ $(DEST_DIR)/progress_dialog.py
 
 $(DEST_DIR)/login_form.py: $(DEST_DIR)/login_form.bak
 	cp $^ $(DEST_DIR)/login_form.py

@@ -11,8 +11,12 @@ class SqlException(Exception):
     ErrcodeNoFile           = 2
     ErrcodeDecryptFail      = 3
     ErrcodeIncorrectFormat  = 4
-
     ErrcodeDuplicateName    = 5
+
+    StatusEncypting         = 100
+    StatusDecrypting        = 101
+    StatusNamesPreparing    = 102
+    StatusGraphsImporting   = 103
 
     def __init__(self, message = None, errcode = -1):
         if message:
@@ -50,6 +54,8 @@ class DB:
         except FileNotFoundError:
             raise SqlException(errcode = SqlException.ErrcodeNoFile)
 
+        get_answ_callback(status = SqlException.StatusDecrypting)
+
         c = AESCipher(passw)
         data = f.read()
         if not len(data):
@@ -76,10 +82,48 @@ class DB:
             db.commit()
 
     @staticmethod
+    def export_db(fname, passw, callback, without_names = []):
+        to_export = {}
+        names = []
+        without_names = ', '.join(map(lambda e: str(e), without_names)) if len(without_names) else '-1'
+
+        callback(status = SqlException.StatusNamesPreparing)
+
+        q = DB.query()
+        q.prepare("select id, lastname, name, middlename, date_format(date, '%%d.%%m.%%Y') from Names where id not in (%s)" % without_names)
+        q.exec_()
+
+        while q.next():
+            names.append(str(q.value(0)))
+            to_export[q.value(0)] = {
+                    'lastname': q.value(1),
+                    'name': q.value(2),
+                    'middlename': q.value(3),
+                    'date': q.value(4),
+            }
+        q.finish()
+
+        if not len(names):
+            raise SqlException(errcode = SqlException.ErrcodeNoData)
+        names = ', '.join(names)
+
+        to_export = DB.__export_main_info(to_export, names)
+        to_export = DB.__export_cards(to_export, names)
+        to_export = DB.__export_roles(to_export, names)
+        diagrams  = DB.__export_visits(to_export, names)
+        to_export = DB.__swap_keys(to_export)
+        to_export = DB.__export_diagrams({ 'info': to_export, }, diagrams, callback)
+
+        callback(status = SqlException.StatusEncypting)
+        DB.__save_data(fname, passw, to_export)
+
+    @staticmethod
     def __import_data(data, get_answ_callback):
         names = DB.__get_names()
         cur_visits = DB.__select_visits()
         graphs = []
+
+        get_answ_callback(status = SqlException.StatusNamesPreparing)
         for card_no, patient in data['info'].items():
             if card_no in names:
                 DB.__check_patient(names[card_no], patient, get_answ_callback)
@@ -87,19 +131,21 @@ class DB:
                 DB.__add_patient(names, patient, card_no)
 
             graphs.extend(DB.__parse_visits(names[card_no], patient['visits'], cur_visits))
-        DB.__store_graphs(graphs, data['diagrams'])
+        DB.__store_graphs(graphs, data['diagrams'], get_answ_callback)
 
     @staticmethod
-    def __store_graphs(graphs, data):
+    def __store_graphs(graphs, data, get_answ_callback):
         q = DB.query()
         q.prepare("insert into Data(diagram_id, point) values (?, POINT(?, ?))")
-        for gr in graphs:
+        get_answ_callback(status = SqlException.StatusGraphsImporting, count = len(graphs), i = 0)
+        for index, gr in enumerate(graphs):
             q.bindValue(0, gr['diagram_id'])
             d = data[gr['id']]
             for p in d:
                 q.bindValue(1, p[0])
                 q.bindValue(2, p[1])
                 q.exec_()
+            get_answ_callback(status = SqlException.StatusGraphsImporting, count = len(graphs), i = index)
 
     @staticmethod
     def __parse_visits(name, visits, cur_visits):
@@ -241,39 +287,6 @@ class DB:
         return r
 
     @staticmethod
-    def export_db(fname, passw, without_names = []):
-        to_export = {}
-        names = []
-        without_names = ', '.join(map(lambda e: str(e), without_names)) if len(without_names) else '-1'
-
-        q = DB.query()
-        q.prepare("select id, lastname, name, middlename, date_format(date, '%%d.%%m.%%Y') from Names where id not in (%s)" % without_names)
-        q.exec_()
-
-        while q.next():
-            names.append(str(q.value(0)))
-            to_export[q.value(0)] = {
-                    'lastname': q.value(1),
-                    'name': q.value(2),
-                    'middlename': q.value(3),
-                    'date': q.value(4),
-            }
-        q.finish()
-
-        if not len(names):
-            raise SqlException(errcode = SqlException.ErrcodeNoData)
-        names = ', '.join(names)
-
-        to_export = DB.__export_main_info(to_export, names)
-        to_export = DB.__export_cards(to_export, names)
-        to_export = DB.__export_roles(to_export, names)
-        diagrams  = DB.__export_visits(to_export, names)
-        to_export = DB.__swap_keys(to_export)
-        to_export = DB.__export_diagrams({ 'info': to_export, }, diagrams)
-
-        DB.__save_data(fname, passw, to_export)
-
-    @staticmethod
     def __swap_keys(to_export):
         ids = list(to_export.keys())
         for i in ids:
@@ -296,17 +309,22 @@ class DB:
         open(fname, 'wb').write(c.encrypt(data))
 
     @staticmethod
-    def __export_diagrams(to_export, ids):
+    def __export_diagrams(to_export, ids, callback):
         q = DB.query()
         q.prepare("select diagram_id, x(point), y(point) from Data where diagram_id in (%s) order by id" % ids)
         q.exec_()
 
         d = to_export['diagrams'] = {}
+        step = 2000
+        i = 0
 
         while q.next():
             if q.value(0) not in d:
                 d[q.value(0)] = []
             d[q.value(0)].append((q.value(1), q.value(2)))
+            if i % step == 0:
+                callback(status = SqlException.StatusGraphsImporting, i = i)
+            i += 1
 
         q.finish()
         return to_export

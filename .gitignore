@@ -1,6 +1,7 @@
 .*.swp
 *~
 */*.bak
+*/*.pyc
 forms/[!_]*.py
 */__pycache__/*
 db/sql/*

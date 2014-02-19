@@ -3,8 +3,7 @@ from PyQt4.QtCore import *
 from .main_form import Ui_MainWindow as UI_MainWindow
 from .addpatientwindow import AddPatientWindow
 from .patientwindow import PatientWindow
-
-from db import DB
+from .progressdialog import ProgressDialog
 
 class MainWindow(QMainWindow, UI_MainWindow):
     def __init__(self, parent = None):
@@ -47,8 +46,10 @@ class MainWindow(QMainWindow, UI_MainWindow):
 
     @pyqtSlot()
     def on_import_db_triggered(self):
-        return DB.import_db('/tmp/stuff3', 'test_passw', lambda e: e)
+        d = ProgressDialog(self, ProgressDialog.ModeImport)
+        d.show()
 
     @pyqtSlot()
     def on_export_db_triggered(self):
-        return DB.export_db('/tmp/stuff3', 'test_passw')
+        d = ProgressDialog(self, ProgressDialog.ModeExport)
+        d.show()
