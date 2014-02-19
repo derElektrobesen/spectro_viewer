@@ -12,6 +12,8 @@ class SqlException(Exception):
     ErrcodeDecryptFail      = 3
     ErrcodeIncorrectFormat  = 4
 
+    ErrcodeDuplicateName    = 5
+
     def __init__(self, message = None, errcode = -1):
         if message:
             self.__msg = message
@@ -75,7 +77,74 @@ class DB:
 
     @staticmethod
     def __import_data(data, get_answ_callback):
-        print(data)
+        names = DB.__get_names()
+        for patient in data['info'].values():
+            if patient['card_no'] in names:
+                DB.__check_patient(names, patient, get_answ_callback)
+            else:
+                DB.__add_patient(names, patient)
+
+    @staticmethod
+    def __check_patient(names, patient, get_answ_callback):
+        name = names[patient['card_no']]
+        if name['name'] != patient['name'] or \
+           name['lastname'] != patient['lastname'] or \
+           name['middlename'] != patient['middlename']:
+            new_name = get_answ_callback(err_code = SqlException.ErrcodeDuplicateName,
+                    name_1 = name, name_2 = patient)
+            DB.__update_patient(_id = name['id'], new_name = new_name)
+
+    @staticmethod
+    def __update_patient(_id, new_name):
+        q = DB.query()
+        q.prepare("update Names set lastname = ?, name = ?, middlename = ? where id = ?")
+        q.bindValue(0, new_name['lastname'])
+        q.bindValue(1, new_name['name'])
+        q.bindValue(2, new_name['middlename'])
+        q.bindValue(3, _id)
+        q.exec_()
+        q.finish()
+
+    @staticmethod
+    def __add_patient(names, patient):
+        q = DB.query()
+        q.prepare("call add_patient(?, ?, ?, ?, ?, ?, ?, ?)")
+        q.bindValue(0, patient['lastname'])
+        q.bindValue(1, patient['name'])
+        q.bindValue(2, patient['middlename'])
+        q.bindValue(3, patient['card_no'])
+        q.bindValue(4, patient['date'])
+        q.bindValue(5, patient['eco_count'])
+        q.bindValue(6, patient['diagnosis'])
+        q.bindValue(7, patient['treatment'])
+        q.exec_()
+        q.finish()
+        q.prepare("select name_id from Cards where card_no = ?")
+        q.bindValue(0, patient['card_no'])
+        q.exec_()
+        q.next()
+        names[patient['card_no']] = {
+            'lastname'  : patient['lastname'],
+            'name'      : patient['name'],
+            'middlename': patient['middlename'],
+            'id'        : q.value(0),
+        }
+        q.finish()
+
+    @staticmethod
+    def __get_names():
+        q = DB.query()
+        q.prepare("select id, lastname, name, middlename, card_no from select_all_names")
+        q.exec_()
+        r = {}
+        while q.next():
+            r[q.value(4)] = {
+                    'id': q.value(0),
+                    'lastname': q.value(1),
+                    'name': q.value(2),
+                    'middlename': q.value(3),
+            }
+        return r
 
     @staticmethod
     def export_db(fname, passw, without_names = []):
