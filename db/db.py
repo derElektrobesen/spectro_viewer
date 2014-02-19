@@ -77,8 +77,6 @@ class DB:
 
     @staticmethod
     def __import_data(data, get_answ_callback):
-        print(data['info'])
-        return
         names = DB.__get_names()
         cur_visits = DB.__select_visits()
         graphs = []
@@ -88,7 +86,7 @@ class DB:
             else:
                 DB.__add_patient(names, patient, card_no)
 
-            graphs.extend(DB.__parse_visits(names[patient['card_no']], patient['visits'], cur_visits))
+            graphs.extend(DB.__parse_visits(names[card_no], patient['visits'], cur_visits))
         DB.__store_graphs(graphs, data['diagrams'])
 
     @staticmethod
