@@ -1,4 +1,5 @@
 from PyQt4.QtSql import QSqlQuery, QSqlDatabase
+from PyQt4.QtCore import QPyNullVariant
 from .crypto import AESCipher
 import pickle
 
@@ -6,7 +7,10 @@ import pickle
 class SqlException(Exception):
     __msg = None
 
-    ErrcodeNoData = 1
+    ErrcodeNoData           = 1
+    ErrcodeNoFile           = 2
+    ErrcodeDecryptFail      = 3
+    ErrcodeIncorrectFormat  = 4
 
     def __init__(self, message = None, errcode = -1):
         if message:
@@ -20,7 +24,10 @@ class SqlException(Exception):
     def __str__(self):
         return self.__msg or ""
 
+
 class DB:
+    __USE_B64_ENCRYPTION = False
+
     @staticmethod
     def name():
         return 'spectroviewer_db'
@@ -34,13 +41,44 @@ class DB:
         return QSqlQuery(DB.con())
 
     @staticmethod
-    def _import(fname):
-        pass
+    def import_db(fname, passw, get_answ_callback):
+        f = None
+        try:
+            f = open(fname, "rb")
+        except FileNotFoundError:
+            raise SqlException(errcode = SqlException.ErrcodeNoFile)
 
-    # Errors:
-    #   -1: No names found
+        c = AESCipher(passw)
+        data = f.read()
+        if not len(data):
+            raise SqlException(errcode = ErrcodeNoData)
+
+        try:
+            data = c.decrypt(data)
+        except:
+            raise SqlException(errcode = SqlException.ErrcodeDecryptFail)
+
+        try:
+            data = pickle.loads(data)
+        except:
+            raise SqlException(errcode = SqlException.ErrcodeIncorrectFormat)
+
+        db = DB.con()
+        db.transaction()
+        try:
+            DB.__import_data(data, get_answ_callback)
+        except:
+            db.rollback()
+            raise
+        else:
+            db.commit()
+
     @staticmethod
-    def export(fname, passw, without_names = []):
+    def __import_data(data, get_answ_callback):
+        print(data)
+
+    @staticmethod
+    def export_db(fname, passw, without_names = []):
         to_export = {}
         names = []
         without_names = ', '.join(map(lambda e: str(e), without_names)) if len(without_names) else '-1'
@@ -67,15 +105,14 @@ class DB:
         to_export = DB.__export_cards(to_export, names)
         to_export = DB.__export_roles(to_export, names)
         diagrams  = DB.__export_visits(to_export, names)
-        to_export = { 'info': to_export, }
-        to_export = DB.__export_diagrams(to_export, diagrams)
+        to_export = DB.__export_diagrams({ 'info': to_export, }, diagrams)
 
         DB.__save_data(fname, passw, to_export)
 
     @staticmethod
     def __save_data(fname, passw, to_export):
         data = pickle.dumps(to_export, pickle.HIGHEST_PROTOCOL)
-        c = AESCipher(passw, b64encode = False)
+        c = AESCipher(passw, b64encode = DB.__USE_B64_ENCRYPTION)
         open(fname, 'wb').write(c.encrypt(data))
 
     @staticmethod

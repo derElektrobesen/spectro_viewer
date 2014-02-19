@@ -47,8 +47,8 @@ class MainWindow(QMainWindow, UI_MainWindow):
 
     @pyqtSlot()
     def on_import_db_triggered(self):
-        pass
+        return DB.import_db('/tmp/stuff3', 'test_passw', lambda e: e)
 
     @pyqtSlot()
     def on_export_db_triggered(self):
-        return DB.export('/tmp/stuff3', 'test_passw', [1])
+        return DB.export_db('/tmp/stuff3', 'test_passw', [1])

@@ -22,6 +22,9 @@ class AESCipher:
 
     def decrypt(self, enc):
         offset = 0
+        if not len(enc):
+            raise ValueError("No data given")
+
         if enc[0] != AESCipher.__BIN_FLAG[0]:
             enc = base64.b64decode(enc)
         else:
